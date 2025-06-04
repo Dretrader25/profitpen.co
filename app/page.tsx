@@ -420,7 +420,7 @@ export default function Home() {
 	return (
 		<>
 			<motion.div
-				className="relative isolate bg-white min-h-screen overflow-hidden"
+				className="relative isolate bg-white dark:bg-neutral-900 min-h-screen overflow-hidden"
 				initial="hidden"
 				animate={isFadingOut ? "exit" : "visible"}
 				exit="exit"
@@ -485,7 +485,7 @@ export default function Home() {
 					<div className="text-center">
 						{/* Pill Tab */}
 						<motion.div
-							className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-blue-50 border border-blue-200 rounded-full text-blue-700 text-sm font-medium shadow-sm"
+							className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-blue-50 border border-blue-200 rounded-full text-blue-700 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-300 text-sm font-medium shadow-sm"
 							initial={{ opacity: 0, y: -10 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6, delay: 0.2 }}
@@ -495,7 +495,7 @@ export default function Home() {
 						</motion.div>
 
 						<motion.h1 
-							className="text-xl max-w-4xl mx-auto font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl"
+							className="text-xl max-w-4xl mx-auto font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl lg:text-7xl"
 							style={{
 								textShadow: '0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1)',
 							}}
@@ -514,7 +514,7 @@ export default function Home() {
 						>
 							From Ideation to Monetization in One Click
 						</motion.h1>
-						<p className="mt-4 text-lg leading-8 text-gray-600">
+						<p className="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
 							Create high converting ebooks, audiobooks and more with AI in seconds.
 						</p>
 						<div className="mt-8">
@@ -525,7 +525,7 @@ export default function Home() {
 										id="idea"
 										name="idea"
 										required
-										className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 bg-white text-gray-900 rounded-full pr-32 py-3"
+										className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 bg-white text-gray-900 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 rounded-full pr-32 py-3"
 										value={formData.idea}
 										onChange={(e) =>
 											setFormData({ ...formData, idea: e.target.value })
@@ -563,7 +563,7 @@ export default function Home() {
 										transition={{ duration: 0.3 }}
 									>
 										<div className="relative pt-1">
-											<div className="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-gray-200 shadow-inner">
+											<div className="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-gray-200 dark:bg-gray-700 shadow-inner">
 												<motion.div
 													initial={{ width: 0 }}
 													animate={{ width: `${progress}%` }}
@@ -587,7 +587,7 @@ export default function Home() {
 												</motion.div>
 											</div>
 											<motion.p 
-												className="text-center text-sm text-gray-600"
+												className="text-center text-sm text-gray-600 dark:text-gray-400"
 												animate={progress > 90 ? { opacity: [1, 0.7, 1] } : {}}
 												transition={{ duration: 1, repeat: Infinity }}
 											>
@@ -618,7 +618,7 @@ export default function Home() {
 												onClick={() =>
 													setFormData({ ...formData, idea: category.template })
 												}
-												className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${category.color}`}
+												className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${category.color} dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:border-gray-600`}
 											>
 												<span className="mr-2">{category.emoji}</span>
 												{category.text}
@@ -627,25 +627,340 @@ export default function Home() {
 								</AnimatePresence>
 							</div>
 							<div className="mt-8 flex flex-col items-center">
-								<p className="text-sm text-gray-500 mb-3">Story Templates</p>
+								<p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Story Templates</p>
 								<div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
 									<AnimatePresence>
 										{!isFadingOut &&
-											templates.map((template, i) => (
-												<motion.button
-													key={template.text}
-													custom={i}
-													variants={templateVariants}
-													initial="hidden"
-													animate="visible"
-													exit="exit"
-													onClick={() =>
-														setFormData({ ...formData, idea: template.template })
-													}
-													className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${template.color}`}
-												>
-													<span className="mr-2">{template.emoji}</span>
-													{template.text}
+											templates.map((template, i) => {
+												// Base dark mode classes
+												let darkClasses = 'dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:border-gray-600';
+												if (template.color.includes('purple')) {
+													darkClasses = 'dark:bg-purple-900 dark:hover:bg-purple-800 dark:text-purple-300 dark:border-purple-700';
+												} else if (template.color.includes('blue')) {
+													darkClasses = 'dark:bg-blue-900 dark:hover:bg-blue-800 dark:text-blue-300 dark:border-blue-700';
+												} else if (template.color.includes('gray')) {
+													darkClasses = 'dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-gray-200 dark:border-gray-500';
+												} else if (template.color.includes('pink')) {
+													darkClasses = 'dark:bg-pink-900 dark:hover:bg-pink-800 dark:text-pink-300 dark:border-pink-700';
+												} else if (template.color.includes('red')) {
+													darkClasses = 'dark:bg-red-900 dark:hover:bg-red-800 dark:text-red-300 dark:border-red-700';
+												} else if (template.color.includes('cyan')) {
+													darkClasses = 'dark:bg-cyan-900 dark:hover:bg-cyan-800 dark:text-cyan-300 dark:border-cyan-700';
+												} else if (template.color.includes('teal')) {
+													darkClasses = 'dark:bg-teal-900 dark:hover:bg-teal-800 dark:text-teal-300 dark:border-teal-700';
+												} else if (template.color.includes('orange')) {
+													darkClasses = 'dark:bg-orange-900 dark:hover:bg-orange-800 dark:text-orange-300 dark:border-orange-700';
+												} else if (template.color.includes('yellow')) {
+													darkClasses = 'dark:bg-yellow-900 dark:hover:bg-yellow-800 dark:text-yellow-300 dark:border-yellow-700';
+												} else if (template.color.includes('indigo')) {
+													darkClasses = 'dark:bg-indigo-900 dark:hover:bg-indigo-800 dark:text-indigo-300 dark:border-indigo-700';
+												}
+												return (
+													<motion.button
+														key={template.text}
+														custom={i}
+														variants={templateVariants}
+														initial="hidden"
+														animate="visible"
+														exit="exit"
+														onClick={() =>
+															setFormData({ ...formData, idea: template.template })
+														}
+														className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${template.color} ${darkClasses}`}
+													>
+														<span className="mr-2">{template.emoji}</span>
+														{template.text}
+													</motion.button>
+												);
+											})}
+									</AnimatePresence>
+								</div>
+							</div>
+						</div>
+					</div>
+				</motion.div>
+			</div>
+
+			{/* Ebook Gallery */}
+			<div className="mx-auto max-w-[1600px] px-6 lg:px-8 py-16">
+				<div className="space-y-8">
+					<div>
+						<h2 className="text-3xl leading-tight font-bold text-gray-900 dark:text-white">
+							Discover Ebooks
+						</h2>
+						<p className="text-gray-600 dark:text-gray-300 mt-1">
+							Skip months of writing, create professional ebooks in minutes
+						</p>
+					</div>
+
+					{/* Mobile horizontal scroll */}
+					<div className="block md:hidden">
+						<div className="relative overflow-hidden">
+							<div className="flex overflow-x-auto gap-4 sm:gap-8 pb-4 no-scrollbar">
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+									<div className="aspect-[16/9] relative overflow-hidden w-full">
+										<img alt="AI Story Creator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+											<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												</svg>
+											</div>
+										</div>
+									</div>
+									<div className="p-6 flex flex-col flex-1 w-full">
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">AI Story Creator</h3>
+										<p className="text-gray-600 dark:text-gray-300 mb-2">Create compelling fiction and non-fiction with AI assistance</p>
+										<div className="flex-1"></div>
+										<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Free plan</span></p>
+									</div>
+								</a>
+
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+									<div className="aspect-[16/9] relative overflow-hidden w-full">
+										<img alt="Business Book Generator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+											<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												</svg>
+											</div>
+										</div>
+									</div>
+									<div className="p-6 flex flex-col flex-1 w-full">
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Business Books</h3>
+										<p className="text-gray-600 dark:text-gray-300 mb-2">Transform your expertise into professional business books</p>
+										<div className="flex-1"></div>
+										<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Starter plan required</span></p>
+									</div>
+								</a>
+
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+									<div className="aspect-[16/9] relative overflow-hidden w-full">
+										<img alt="Educational Content" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+											<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												</svg>
+											</div>
+										</div>
+									</div>
+									<div className="p-6 flex flex-col flex-1 w-full">
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Educational Content</h3>
+										<p className="text-gray-600 dark:text-gray-300 mb-2">Create engaging educational materials and course content</p>
+										<div className="flex-1"></div>
+										<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Starter plan required</span></p>
+									</div>
+								</a>
+
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+									<div className="aspect-[16/9] relative overflow-hidden w-full">
+										<img alt="Self-Help Books" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+											<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												</svg>
+											</div>
+										</div>
+									</div>
+									<div className="p-6 flex flex-col flex-1 w-full">
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Self-Help Books</h3>
+										<p className="text-gray-600 dark:text-gray-300 mb-2">Share your wisdom through inspiring self-improvement content</p>
+										<div className="flex-1"></div>
+										<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Pro plan required</span></p>
+									</div>
+								</a>
+
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+									<div className="aspect-[16/9] relative overflow-hidden w-full">
+										<img alt="Technical Guides" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+											<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												</svg>
+											</div>
+										</div>
+									</div>
+									<div className="p-6 flex flex-col flex-1 w-full">
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Technical Guides</h3>
+										<p className="text-gray-600 dark:text-gray-300 mb-2">Create comprehensive technical documentation and tutorials</p>
+										<div className="flex-1"></div>
+										<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Pro plan required</span></p>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+
+					{/* Desktop grid */}
+					<div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						<a className="group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+							<div className="aspect-[16/9] relative overflow-hidden">
+								<img alt="AI Story Creator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+									<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<div className="p-6 flex flex-col flex-1">
+								<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">AI Story Creator</h3>
+								<p className="text-gray-600 dark:text-gray-300 mb-2">Create compelling fiction and non-fiction with AI assistance</p>
+								<div className="flex-1"></div>
+								<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Free plan</span></p>
+							</div>
+						</a>
+
+						<a className="group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+							<div className="aspect-[16/9] relative overflow-hidden">
+								<img alt="Business Book Generator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+									<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<div className="p-6 flex flex-col flex-1">
+								<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Business Books</h3>
+								<p className="text-gray-600 dark:text-gray-300 mb-2">Transform your expertise into professional business books</p>
+								<div className="flex-1"></div>
+								<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Starter plan required</span></p>
+							</div>
+						</a>
+
+						<a className="group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+							<div className="aspect-[16/9] relative overflow-hidden">
+								<img alt="Educational Content" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+									<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<div className="p-6 flex flex-col flex-1">
+								<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Educational Content</h3>
+								<p className="text-gray-600 dark:text-gray-300 mb-2">Create engaging educational materials and course content</p>
+								<div className="flex-1"></div>
+								<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Starter plan required</span></p>
+							</div>
+						</a>
+
+						<a className="group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+							<div className="aspect-[16/9] relative overflow-hidden">
+								<img alt="Self-Help Books" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+									<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<div className="p-6 flex flex-col flex-1">
+								<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Self-Help Books</h3>
+								<p className="text-gray-600 dark:text-gray-300 mb-2">Share your wisdom through inspiring self-improvement content</p>
+								<div className="flex-1"></div>
+								<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Pro plan required</span></p>
+							</div>
+						</a>
+
+						<a className="group bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200/80 dark:border-neutral-700 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+							<div className="aspect-[16/9] relative overflow-hidden">
+								<img alt="Technical Guides" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+									<div className="bg-white dark:bg-neutral-700 rounded-full size-20 flex items-center justify-center border-4 border-gray-200 dark:border-neutral-600 shadow-xl">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black dark:fill-white">
+											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<div className="p-6 flex flex-col flex-1">
+								<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Technical Guides</h3>
+								<p className="text-gray-600 dark:text-gray-300 mb-2">Create comprehensive technical documentation and tutorials</p>
+								<div className="flex-1"></div>
+								<p className="text-xs"><span className="text-gray-500 dark:text-gray-400">Pro plan required</span></p>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			{/* Feature section */}
+			<motion.div
+				className="mx-auto max-w-7xl px-6 lg:px-8 py-24 sm:py-32"
+				variants={featuresVariants}
+				animate={isFadingOut ? 'exit' : 'visible'}
+			>
+				<div className="mx-auto max-w-2xl lg:text-center">
+					<h2 className="text-base font-semibold leading-7 text-blue-600 dark:text-blue-400">
+						Write Faster
+					</h2>
+					<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+						Everything you need to write your story
+					</p>
+					<p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+						Our AI-powered platform helps you develop characters, build worlds, and
+						craft compelling narratives with ease.
+					</p>
+				</div>
+				<div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+					<dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+						{features.map((feature) => (
+							<div key={feature.name} className="flex flex-col">
+								<dt className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+									{feature.name}
+								</dt>
+								<dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600 dark:text-gray-300">
+									<p className="flex-auto">{feature.description}</p>
+								</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+			</motion.div>
+		</motion.div>
+
+		{/* Transition overlay */}
+		<AnimatePresence>
+			{isNavigating && (
+				<motion.div
+					className="fixed inset-0 z-50 bg-white dark:bg-neutral-900 flex items-center justify-center"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+				>
+					<motion.div
+						className="text-center"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.2, duration: 0.4 }}
+					>
+						<div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
+							<motion.div
+								animate={{ rotate: 360 }}
+								transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+								className="w-8 h-8 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full"
+							/>
+						</div>
+						<p className="text-lg font-medium text-gray-900 dark:text-white">Preparing your ebook...</p>
+					</motion.div>
+				</motion.div>
+			)}
+		</AnimatePresence>
+	</>
+);
+}
 												</motion.button>
 											))}
 									</AnimatePresence>
