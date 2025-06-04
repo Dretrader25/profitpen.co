@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStoryStore, Genre, Tone, Audience } from '@/lib/store/storyStore';
-import { generateStoryConcept } from '@/lib/ai/gemini';
+// import { generateStoryConcept } from '@/lib/ai/gemini'; // Remove or comment out
 import { motion, AnimatePresence } from 'framer-motion';
 import { PenTool, Sparkles } from 'lucide-react';
 
@@ -236,45 +236,61 @@ export default function Home() {
 		}, 300);
 
 		try {
-			console.log('Starting story concept generation...');
+			console.log('Starting API call to /api/generate-story-concept...');
 
-			const storyConcept = await generateStoryConcept(
-				formData.idea,
-				formData.genre as Genre,
-				formData.tone as Tone,
-				formData.audience as Audience
-			);
+			const response = await fetch('/api/generate-story-concept', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					idea: formData.idea,
+					genre: formData.genre, // Ensure this matches the Genre type if strict typing is enforced by API
+					tone: formData.tone,   // Ensure this matches the Tone type
+					audience: formData.audience, // Ensure this matches the Audience type
+				}),
+			});
 
-			console.log('Story concept generated:', storyConcept);
+			if (!response.ok) {
+				// Attempt to parse error response from API
+				const errorData = await response.json().catch(() => ({ error: 'API request failed with status: ' + response.status, details: 'Could not parse error JSON.' }));
+				console.error('API Error Data:', errorData);
+				throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+			}
+
+			const storyConcept = await response.json(); // This is the data returned from the API route
+
+			console.log('Story concept received from API:', storyConcept);
 			setProgress(100);
 			clearInterval(progressInterval);
 
+			// The rest of the logic for setCurrentStory and navigation remains largely the same
 			setCurrentStory({
 				id: Date.now().toString(),
 				title: storyConcept.title,
-				genre: formData.genre as Genre,
-				tone: formData.tone as Tone,
-				audience: formData.audience as Audience,
+				genre: formData.genre as Genre, // Cast to Genre type
+				tone: formData.tone as Tone,     // Cast to Tone type
+				audience: formData.audience as Audience, // Cast to Audience type
 				premise: storyConcept.premise,
 				shortDraft: storyConcept.shortDraft,
 				themes: Array.isArray(storyConcept.themes)
 					? storyConcept.themes
 					: storyConcept.themes
-							.split('\n')
-							.map((t: string) => t.trim())
-							.filter(Boolean),
+						.split('\n') // Note: check if backend sends \n or
+						.map((t: string) => t.trim())
+						.filter(Boolean),
 				characters: storyConcept.characterFramework
 					? [
-							{
-								id: 'char_1',
-								name: storyConcept.characterFramework.mainCharacter.name,
-								role: storyConcept.characterFramework.mainCharacter.role,
-								personality:
-									storyConcept.characterFramework.mainCharacter.personality,
-								motivation: '',
-								relationships: [],
-							},
-					  ]
+						{
+							id: 'char_1',
+							name: storyConcept.characterFramework.mainCharacter.name,
+							role: storyConcept.characterFramework.mainCharacter.role,
+							personality:
+								storyConcept.characterFramework.mainCharacter.personality,
+							motivation: '',
+							relationships: [],
+						},
+					]
 					: [],
 				worldBuilding: storyConcept.worldBuilding,
 				storyBeats: [],
@@ -288,13 +304,17 @@ export default function Home() {
 				chapters: [],
 			});
 
-			// Wait for fade out animation to complete before navigating
 			await new Promise(resolve => setTimeout(resolve, 800));
 			console.log('Navigating to preview...');
 			router.push('/preview');
+
 		} catch (error) {
-			console.error('Error generating story concept:', error);
-			alert('There was an error generating your story concept. Please try again.');
+			console.error('Error in handleSubmit (API call or processing):', error);
+			let errorMessage = 'There was an error generating your story concept. Please try again.';
+			if (error instanceof Error) {
+				errorMessage = error.message; // Use the more specific error message
+			}
+			alert(errorMessage);
 			setIsFadingOut(false);
 			setIsNavigating(false);
 		} finally {
