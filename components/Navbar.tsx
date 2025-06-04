@@ -8,7 +8,6 @@ import ThemeToggle from './ThemeToggle';
 const navigation = [
   { name: 'Story Studio', href: '/studio' },
   { name: 'Generate', href: '/dashboard/generate' },
-  { name: 'Export', href: '/export' },
   { name: 'Pricing', href: '/pricing' },
 ];
 
