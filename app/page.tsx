@@ -158,7 +158,9 @@ export default function Home() {
 		"In a city powered by memories, someone is stealing the most precious ones.",
 		"A young witch accidentally summons a demon who is more interested in cooking than chaos."
 	];
-	const [currentPlaceholder, setCurrentPlaceholder] = useState(exampleStoryIdeas[0]);
+	const [currentIdeaIndex, setCurrentIdeaIndex] = useState(0);
+	const [currentPlaceholder, setCurrentPlaceholder] = useState('');
+	const [isTypingEffect, setIsTypingEffect] = useState(true);
 
 	const [formData, setFormData] = useState({
 		idea: '',
@@ -168,14 +170,39 @@ export default function Home() {
 	});
 
 	useEffect(() => {
-		let currentIndex = 0;
-		const intervalId = setInterval(() => {
-			currentIndex = (currentIndex + 1) % exampleStoryIdeas.length;
-			setCurrentPlaceholder(exampleStoryIdeas[currentIndex]);
-		}, 3500); // Change placeholder every 3.5 seconds
+		let charDisplayIndex = 0;
+		let effectTimeoutId: NodeJS.Timeout;
 
-		return () => clearInterval(intervalId); // Cleanup interval on component unmount
-	}, []); // Empty dependency array ensures this runs only once on mount and cleans up on unmount
+		const typingEffectLogic = () => {
+			const currentFullIdea = exampleStoryIdeas[currentIdeaIndex];
+
+			if (isTypingEffect) {
+				if (charDisplayIndex < currentFullIdea.length) {
+					setCurrentPlaceholder(currentFullIdea.substring(0, charDisplayIndex + 1));
+					charDisplayIndex++;
+					effectTimeoutId = setTimeout(typingEffectLogic, 120);
+				} else {
+
+					setIsTypingEffect(false);
+					effectTimeoutId = setTimeout(typingEffectLogic, 2500);
+				}
+			} else {
+
+				setCurrentIdeaIndex(prevIndex => (prevIndex + 1) % exampleStoryIdeas.length);
+				charDisplayIndex = 0;
+				setCurrentPlaceholder('');
+				setIsTypingEffect(true);
+
+			}
+		};
+
+
+		effectTimeoutId = setTimeout(typingEffectLogic, isTypingEffect ? 100 : 0);
+
+		return () => {
+			clearTimeout(effectTimeoutId);
+		};
+	}, [currentIdeaIndex, isTypingEffect]);
 
 	useEffect(() => {
 		if (progress >= 95 && !isFadingOut && !isNavigating) {
