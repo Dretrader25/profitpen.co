@@ -140,12 +140,42 @@ export default function Home() {
 	const [progress, setProgress] = useState(0);
 	const [isFadingOut, setIsFadingOut] = useState(false);
 	const [isNavigating, setIsNavigating] = useState(false);
+
+	const exampleStoryIdeas = [
+		"A detective who can talk to ghosts solves crimes in Victorian London.",
+		"Two rival space pirates must team up to find a legendary treasure.",
+		"A baker discovers her pastries have magical properties, attracting mythical creatures.",
+		"In a world where emotions are currency, a young woman tries to buy back her lost joy.",
+		"A librarian finds a hidden map that leads to a city of forgotten stories.",
+		"An AI gains sentience and decides to run for president.",
+		"A group of teenagers stumbles upon a portal to a parallel dimension in their school basement.",
+		"A musician's songs can alter reality, but each change has unforeseen consequences.",
+		"In a future where dreams can be recorded and sold, a dream thief uncovers a conspiracy.",
+		"A cartographer in a fantasy kingdom is tasked with mapping a land that constantly changes.",
+		"A retired superhero must return to action when their old nemesis resurfaces with a new plan.",
+		"A chef inherits a restaurant that serves as a neutral ground for supernatural factions.",
+		"An archaeologist unearths an ancient artifact that begins to rewrite history.",
+		"In a city powered by memories, someone is stealing the most precious ones.",
+		"A young witch accidentally summons a demon who is more interested in cooking than chaos."
+	];
+	const [currentPlaceholder, setCurrentPlaceholder] = useState(exampleStoryIdeas[0]);
+
 	const [formData, setFormData] = useState({
 		idea: '',
 		genre: 'Fantasy',
 		tone: 'Whimsical',
 		audience: 'Adult',
 	});
+
+	useEffect(() => {
+		let currentIndex = 0;
+		const intervalId = setInterval(() => {
+			currentIndex = (currentIndex + 1) % exampleStoryIdeas.length;
+			setCurrentPlaceholder(exampleStoryIdeas[currentIndex]);
+		}, 3500); // Change placeholder every 3.5 seconds
+
+		return () => clearInterval(intervalId); // Cleanup interval on component unmount
+	}, []); // Empty dependency array ensures this runs only once on mount and cleans up on unmount
 
 	useEffect(() => {
 		if (progress >= 95 && !isFadingOut && !isNavigating) {
@@ -479,7 +509,7 @@ export default function Home() {
 												handleSubmit(e);
 											}
 										}}
-										placeholder="Describe your story idea in a few sentences..."
+										placeholder={currentPlaceholder}
 									/>
 									<div className="absolute inset-y-0 right-0 flex items-center pr-2 z-10">
 										<button
