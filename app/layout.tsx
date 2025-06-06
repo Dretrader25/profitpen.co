@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 import GeminiMonitor from "@/components/GeminiMonitor";
+import { AuthProvider } from "@/lib/authContext"; // Import AuthProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,14 +32,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-white">
+    <html lang="en" className="bg-white dark:bg-gray-900">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased bg-white`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased text-gray-900 bg-gray-50 dark:bg-gray-900 dark:text-gray-100`}
       >
-        <Navbar />
-        {children}
-        <Footer />
-        <GeminiMonitor />
+        <AuthProvider> {/* Wrap with AuthProvider */}
+          <Navbar />
+          {children}
+          <Footer />
+          <GeminiMonitor />
+        </AuthProvider>
       </body>
     </html>
   );

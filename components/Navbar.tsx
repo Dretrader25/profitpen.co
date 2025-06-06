@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'; // Import useRouter
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { supabase } from '@/lib/supabaseClient'; // Import supabase
 
 const navigation = [
   { name: 'Story Studio', href: '/studio' },
@@ -19,7 +20,20 @@ const moreLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter(); // Initialize router
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error logging out:', error.message);
+      // Optionally, display an error to the user, though signOut errors are rare
+    } else {
+      // Redirect to homepage or login page after successful logout
+      router.push('/');
+      // You might also want to clear any local user state here if not handled by onAuthStateChange
+    }
+  };
 
   // Calculate progress based on current path
   const getProgress = () => {
@@ -118,6 +132,12 @@ export default function Navbar() {
             >
               Sign Up
             </Link>
+            <button
+              onClick={handleLogout}
+              className="whitespace-nowrap inline-flex h-11 items-center justify-center rounded-xl px-8 py-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-gray-600 hover:text-gray-900"
+            >
+              Logout
+            </button>
           </div>
         </div>
 

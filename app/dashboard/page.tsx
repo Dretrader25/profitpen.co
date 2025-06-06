@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/authContext'; // Import useAuth
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStoryStore } from '@/lib/store/storyStore';
 import DashboardNavigation from './components/DashboardNavigation';
@@ -60,12 +62,13 @@ const tabConfigs = {
 };
 
 export default function DashboardPage() {
+  const { user, isLoading: authIsLoading } = useAuth(); // Get user and loading state
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Page specific loading, not auth
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { currentStory } = useStoryStore();
 
-  // Mock data for dashboard
   const mockStats = {
     totalWords: 12450,
     totalPages: 28,
@@ -76,31 +79,45 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    // Simulate loading for smooth transition
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
+    // Auth check
+    if (!authIsLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authIsLoading, router]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false); // Page specific loading
+    }, 800);
     return () => clearTimeout(timer);
   }, []);
 
-  if (isLoading) {
+  // If auth is still loading or user is null (and redirection hasn't happened yet)
+  if (authIsLoading || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
+        <motion.div /* ... loading animation ... */ >
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-2">Loading Dashboard</h2>
-          <p className="text-gray-500">Preparing your workspace overview...</p>
+          <h2 className="text-2xl font-semibold text-gray-700 mb-2">Loading...</h2>
         </motion.div>
       </div>
     );
   }
 
+  // If page is loading (for other reasons, e.g. data fetching, though not much here)
+  if (isLoading) {
+     return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        {/* ... same loading display as above or slightly different ... */}
+        <motion.div>
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-2">Preparing Dashboard...</h2>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Original content of DashboardPage, rendered only if authenticated
   return (
     <motion.div 
       className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex"

@@ -1,37 +1,86 @@
 // app/sign-up/page.tsx
 'use client';
 
-import React, { useState, FormEvent } from 'react'; // Import useState, FormEvent
+import React, { useState, FormEvent } from 'react';
+import { supabase } from '@/lib/supabaseClient'; // Import the Supabase client
+import { useRouter } from 'next/navigation'; // Import for potential redirect later
 
 export default function SignUpPage() {
-  const [name, setName] = useState(''); // State for Name
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState(''); // State for error messages
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState(''); // For success messages
+  const [isLoading, setIsLoading] = useState(false); // For loading state
+  const router = useRouter();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(''); // Clear previous errors
+    setError('');
+    setMessage('');
+    setIsLoading(true);
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
+      setIsLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
+      setIsLoading(false);
       return;
     }
 
-    // Log form data (replace with actual submission logic later)
-    console.log('Sign Up form submitted with:', {
-      name,
-      email,
-      password, // Only log password, not confirmPassword
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: name, // Store the name in user_metadata (Supabase default) or public.users table via trigger
+        }
+        // If you have email confirmation enabled in Supabase (default),
+        // a confirmation link will be sent to the user.
+        // You can specify a redirect URL after confirmation if needed:
+        // emailRedirectTo: `${window.location.origin}/dashboard`,
+      }
     });
-    // alert(`Sign up attempt: Name: ${name}, Email: ${email}`); // Optional for quick visual feedback
-    // Add logic here to actually submit to a backend in a real app
+
+    setIsLoading(false);
+
+    if (signUpError) {
+      console.error('Supabase sign up error:', signUpError);
+      setError(signUpError.message);
+    } else if (data.user && data.user.identities && data.user.identities.length === 0) {
+      // This case can happen if email confirmation is required but the user already exists without being confirmed.
+      // Or if a user exists with an unverified email from a social provider.
+      console.log('User exists but may not be confirmed or is linked to a social provider without email verification.');
+      setMessage('User may already exist or requires email verification from a social provider. Please try logging in or check your email for a verification link.');
+      // Optionally, you could attempt to resend confirmation here if applicable
+      // await supabase.auth.resend({ type: 'signup', email: email });
+    } else if (data.user) {
+      // Check if email confirmation is pending
+      if (data.session === null && data.user.email_confirmed_at === undefined) {
+         setMessage('Sign up successful! Please check your email to confirm your account.');
+      } else if (data.session) {
+        // This case implies auto-confirmation or user already confirmed & logged in
+        setMessage('Sign up successful! Redirecting...');
+        // router.push('/dashboard'); // Or wherever you want to redirect after immediate sign-up/login
+      } else {
+        // A user object exists, but no session and not clearly pending confirmation (edge case)
+        setMessage('Sign up process initiated. Please check your email or try logging in.');
+      }
+      // Clear form on success
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+    } else {
+      // Fallback for unexpected response structure though data.user should exist on non-error
+      setError('An unexpected issue occurred during sign up. Please try again.');
+      console.log('Supabase sign up response (unexpected):', data);
+    }
   };
 
   return (
@@ -44,6 +93,7 @@ export default function SignUpPage() {
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Input */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                   Name
@@ -53,13 +103,15 @@ export default function SignUpPage() {
                   name="name"
                   id="name"
                   autoComplete="name"
-                  value={name} // Bind state
-                  onChange={(e) => setName(e.target.value)} // Add handler
-                  required // HTML5 validation
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                   className="block w-full p-3 sm:text-sm text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500"
+                  disabled={isLoading}
                 />
               </div>
 
+              {/* Email Input */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email address
@@ -69,13 +121,15 @@ export default function SignUpPage() {
                   name="email"
                   id="email"
                   autoComplete="email"
-                  value={email} // Bind state
-                  onChange={(e) => setEmail(e.target.value)} // Add handler
-                  required // HTML5 validation
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   className="block w-full p-3 sm:text-sm text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500"
+                  disabled={isLoading}
                 />
               </div>
 
+              {/* Password Input */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Password
@@ -85,13 +139,15 @@ export default function SignUpPage() {
                   name="password"
                   id="password"
                   autoComplete="new-password"
-                  value={password} // Bind state
-                  onChange={(e) => setPassword(e.target.value)} // Add handler
-                  required // HTML5 validation
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                   className="block w-full p-3 sm:text-sm text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500"
+                  disabled={isLoading}
                 />
               </div>
 
+              {/* Confirm Password Input */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   Confirm Password
@@ -101,23 +157,28 @@ export default function SignUpPage() {
                   name="confirmPassword"
                   id="confirmPassword"
                   autoComplete="new-password"
-                  value={confirmPassword} // Bind state
-                  onChange={(e) => setConfirmPassword(e.target.value)} // Add handler
-                  required // HTML5 validation
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
                   className="block w-full p-3 sm:text-sm text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500"
+                  disabled={isLoading}
                 />
               </div>
 
               {error && (
                 <p className="text-sm text-red-600 text-center">{error}</p>
               )}
+              {message && (
+                <p className="text-sm text-green-600 text-center">{message}</p>
+              )}
 
               <div>
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 hover:shadow-xl transform hover:scale-105"
+                  disabled={isLoading}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 hover:shadow-xl transform hover:scale-105 disabled:opacity-70"
                 >
-                  Sign Up
+                  {isLoading ? 'Signing Up...' : 'Sign Up'}
                 </button>
               </div>
             </form>

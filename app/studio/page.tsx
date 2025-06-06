@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react'; // Keep existing imports
+import { useAuth } from '@/lib/authContext'; // Import useAuth
+import { useRouter, useSearchParams } from 'next/navigation'; // Import useRouter
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import { useStoryStore } from '@/lib/store/storyStore';
+// ... other Studio imports like StudioNavigation, ChapterManager, CharacterManager etc.
 import StudioNavigation from './components/StudioNavigation';
 import ContentEditor from './components/ContentEditor';
 import ChapterManager from './components/ChapterManager';
@@ -68,13 +70,20 @@ const tabConfigs = {
 };
 
 export default function StudioPage() {
-  const searchParams = useSearchParams();
+  const { user, isLoading: authIsLoading } = useAuth(); // Get user and loading state
+  const router = useRouter();
+  const searchParams = useSearchParams(); // For reading initial tab from URL
+
   const tabParam = searchParams?.get('tab') as StudioTab;
   const initialTab = (tabParam && Object.keys(tabConfigs).includes(tabParam)) ? tabParam : 'overview';
   const [activeTab, setActiveTab] = useState<StudioTab>(initialTab);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Page-specific loading
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { currentStory } = useStoryStore();
+  const { currentStory } = useStoryStore(); // Assuming this provides necessary story data
+
+    // Mock data if needed by StudioNavigation or other components, similar to Dashboard
+    const mockPageCount = currentStory?.chapters?.length || 0;
+    const mockQualityScore = 7; // Replace with actual data if available
 
   // State for real content data
   const [persistedContent, setPersistedContentState] = useState<any>({});
@@ -164,15 +173,26 @@ export default function StudioPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    // Simulate loading for smooth transition
+    // Auth check
+    if (!authIsLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authIsLoading, router]);
+
+  useEffect(() => {
+    // Handle URL parameter changes & page specific loading
+    const tab = searchParams?.get('tab') as StudioTab;
+    if (tab && Object.keys(tabConfigs).includes(tab)) {
+      setActiveTab(tab);
+    }
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setIsLoading(false); // Page specific loading
     }, 800);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
-  const ActiveComponent = tabConfigs[activeTab]?.component;
+  const ActiveComponent = tabConfigs[activeTab]?.component; // This line is fine, but renderActiveComponent is used below
 
   // Function to render component with appropriate props
   const renderActiveComponent = () => {
@@ -284,6 +304,18 @@ export default function StudioPage() {
     }
   };
 
+  if (authIsLoading || !user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <motion.div /* ... loading animation ... */ >
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-2xl font-semibold text-gray-700 mb-2">Loading Studio...</h2>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Page specific loading (after auth is confirmed)
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
@@ -294,8 +326,8 @@ export default function StudioPage() {
           className="text-center"
         >
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-2">Loading Studio</h2>
-          <p className="text-gray-500">Preparing your creative workspace...</p>
+          <h2 className="text-2xl font-semibold text-gray-700 mb-2">Preparing Studio...</h2>
+          <p className="text-gray-500">Getting your creative workspace ready...</p>
         </motion.div>
       </div>
     );
@@ -303,7 +335,7 @@ export default function StudioPage() {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex"
+      className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex h-screen" // Added h-screen for full height layout
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -311,19 +343,19 @@ export default function StudioPage() {
       {/* Studio Navigation */}
       <StudioNavigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={setActiveTab} // Ensure this is correctly passed if handleTabChange is used above
         tabConfigs={tabConfigs}
         sidebarCollapsed={sidebarCollapsed}
         onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         currentStory={currentStory}
-        pageCount={0}
-        qualityScore={Math.round(averageQualityScore)}
+        pageCount={mockPageCount} // Use mockPageCount
+        qualityScore={mockQualityScore} // Use mockQualityScore
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden"> {/* Added overflow-hidden */}
         <motion.main 
-          className="p-6 flex-1"
+          className="p-6 flex-1 overflow-y-auto" // Added overflow-y-auto
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
