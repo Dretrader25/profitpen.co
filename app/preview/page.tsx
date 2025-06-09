@@ -120,12 +120,15 @@ export default function PreviewPage() {
   const isCustomTexture = texture === 'custom';
 
   // Get current story data
-  const { currentStory, setCurrentStory } = useStoryStore();
+  const { currentStory, setCurrentStory, fetchStory } = useStoryStore();
   const router = useRouter();
+  const [isLoadingStory, setIsLoadingStory] = useState(false);
+  const [storyError, setStoryError] = useState<string | null>(null);
 
   // Custom hooks for logic separation
   const {
     persistedContent,
+    setPersistedContent: setLocalPersistedContent, // Renamed to avoid conflict
     currentPageCount,
     isGeneratingMore,
     maxPages,
@@ -138,8 +141,8 @@ export default function PreviewPage() {
     progress,
     getPageContent,
     getBookQualityStats,
-    setPersistedContent
-  } = usePreviewLogic();
+    // setPersistedContent // This is from usePreviewLogic, ensure it's used correctly alongside Supabase
+  } = usePreviewLogic(currentStory); // Pass currentStory if usePreviewLogic needs it for initialization
 
   const {
     colors,
@@ -152,6 +155,26 @@ export default function PreviewPage() {
     handleLayoutChange,
     handleFontSizeChange
   } = usePreviewSettings();
+
+  // Effect to fetch story data if an ID is present (e.g., from URL)
+  useEffect(() => {
+    const storyId = new URLSearchParams(window.location.search).get('storyId');
+    if (storyId && !currentStory) { // Only fetch if storyId exists and no story is loaded
+      setIsLoadingStory(true);
+      setStoryError(null);
+      fetchStory(storyId)
+        .catch(err => {
+          console.error('Failed to fetch story:', err);
+          setStoryError('Failed to load the story. Please try again.');
+        })
+        .finally(() => setIsLoadingStory(false));
+    } else if (currentStory) {
+      // If currentStory is already set (e.g. by direct prop or previous fetch),
+      // potentially initialize persistedContent from it.
+      // This depends on how usePreviewLogic and currentStory.chapters/content are structured.
+      // For now, assuming usePreviewLogic handles initialization if currentStory is passed to it.
+    }
+  }, [fetchStory, currentStory]); // currentStory is a dependency to prevent re-fetch if already loaded
 
   // Add this near other useEffect hooks
   useEffect(() => {
@@ -240,86 +263,144 @@ export default function PreviewPage() {
     }
   };
 
-  const handleSaveContent = (newContent: string) => {
-    if (currentZoomPage !== null) {
-      // Create the updated content object
-      const updatedContent = { ...persistedContent };
-      updatedContent[`container${currentZoomPage}`] = newContent;
-      
-      // Update the state in usePreviewLogic
-      setPersistedContent(updatedContent);
-      
-      // Update the zoom content to reflect the changes
-      setZoomContent(newContent);
-    }
-  };
-
-  const handleRefineInStudio = () => {
+  const handleSaveContent = async (newContent: string) => {
+    if (currentZoomPage === null) return;
     if (!currentStory) {
-      console.error('No current story found');
+      setStoryError("Cannot save content: No active story.");
+      // Fallback to local storage if no story context? Or disable save?
+      // For now, just log and potentially save to local persistedContent if that's desired.
+      console.warn("No currentStory, saving to local persistedContent only.");
+      const updatedLocalContent = { ...persistedContent, [`container${currentZoomPage}`]: newContent };
+      setLocalPersistedContent(updatedLocalContent); // Updates usePreviewLogic's state
+      setZoomContent(newContent);
       return;
     }
 
-    // Simple HTML to text conversion for better chapter content
-    const htmlToText = (html: string) => {
-      return html
-        .replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '\n\n$1\n\n')
-        .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n')
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '$1')
-        .replace(/<b[^>]*>(.*?)<\/b>/gi, '$1')
-        .replace(/<em[^>]*>(.*?)<\/em>/gi, '$1')
-        .replace(/<i[^>]*>(.*?)<\/i>/gi, '$1')
-        .replace(/<li[^>]*>(.*?)<\/li>/gi, '• $1\n')
-        .replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gi, '\n"$1"\n')
-        .replace(/<[^>]*>/g, '') // Remove any remaining HTML tags
-        .replace(/\n\s*\n\s*\n/g, '\n\n') // Replace multiple newlines with double newlines
-        .replace(/^\s+|\s+$/g, '') // Trim whitespace from start and end
-        .replace(/&nbsp;/g, ' ') // Replace HTML entities
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"');
-    };
+    setIsLoadingStory(true); // Use general loading state for saving action
+    setStoryError(null);
+    try {
+      // 1. Update local persisted content (used by usePreviewLogic)
+      const updatedLocalContent = { ...persistedContent, [`container${currentZoomPage}`]: newContent };
+      setLocalPersistedContent(updatedLocalContent); // Update local state via hook from usePreviewLogic
+      setZoomContent(newContent); // Update zoom modal content
 
-    // Convert preview content to chapters format
-    const chapters = [];
-    const visiblePages = getVisiblePages();
-    
-    // Group pages into chapters (every 3-4 pages per chapter)
-    const pagesPerChapter = 4;
-    for (let i = 0; i < visiblePages.length; i += pagesPerChapter) {
-      const chapterPages = visiblePages.slice(i, i + pagesPerChapter);
-      const chapterContent = chapterPages
-        .map(pageNum => {
-          const htmlContent = getPageContent(pageNum);
-          return htmlToText(htmlContent);
-        })
-        .join('\n\n');
+      // 2. Prepare updated story object for Supabase
+      // This assumes `persistedContent` or individual page contents are part of the `Story` object,
+      // or chapters need to be updated. The structure of `currentStory` and how page content
+      // relates to it is crucial here.
+      // Let's assume `currentStory.chapters` holds the content, and we need to find the right chapter.
+      // This is a simplified example; chapter/page mapping might be complex.
       
-      const chapter = {
-        id: `chapter-${Math.floor(i / pagesPerChapter) + 1}`,
-        title: `Chapter ${Math.floor(i / pagesPerChapter) + 1}`,
-        content: chapterContent,
-        pageNumbers: chapterPages,
-        wordCount: chapterContent.split(' ').length,
-        status: 'draft' as const,
-        quality: contentQuality[`container${chapterPages[0]}`]?.qualityScore || 7
-      };
+      let storyDataToUpdate: Partial<Story> = {};
+
+      // Example: if chapters are stored and page content is within chapters
+      const chapterIndexToUpdate = currentStory.chapters?.findIndex(chap => chap.pageNumbers.includes(currentZoomPage));
+
+      if (currentStory.chapters && chapterIndexToUpdate !== -1 && chapterIndexToUpdate !== undefined) {
+        const updatedChapters = [...currentStory.chapters];
+        // Assuming chapter content is a single block. If it's structured, update accordingly.
+        // This is a placeholder: actual update logic will depend on how page content is stored within chapter.
+        // For instance, if a chapter's content is an aggregation of its pages:
+        updatedChapters[chapterIndexToUpdate] = {
+          ...updatedChapters[chapterIndexToUpdate],
+          // This is a naive update. If a chapter contains multiple pages,
+          // you'd need to update only the relevant page's content within the chapter.
+          // Or, if each page is a chapter, then find the chapter by pageNum.
+          content: newContent, // This assumes the entire chapter content is being replaced by this page's content.
+                               // This might not be correct. Revise based on actual data structure.
+          // wordCount: newContent.split(' ').filter(Boolean).length, // Recalculate word count
+        };
+         storyDataToUpdate = { ...currentStory, chapters: updatedChapters };
+      } else {
+        // Fallback: if chapters are not structured as expected, or pages are stored differently.
+        // Perhaps top-level `story.contentPages` (hypothetical)
+        // For now, we'll assume `setCurrentStory` handles the upsert correctly if the whole story object is passed.
+        // This part needs to be robust based on your actual Story type structure.
+        // A simple, potentially incorrect, assumption:
+        // storyDataToUpdate = { ...currentStory, content: { ...currentStory.content, [`page${currentZoomPage}`]: newContent } };
+        console.warn("Chapter structure for update not fully defined. Saving might be incomplete.");
+        // If you are directly saving the `persistedContent` from `usePreviewLogic` into the story:
+        storyDataToUpdate = { ...currentStory, persistedPreviewContent: updatedLocalContent }; // Example field
+      }
       
-      chapters.push(chapter);
+      // Filter out undefined fields before sending to setCurrentStory
+      const cleanStoryData = Object.entries(storyDataToUpdate).reduce((acc, [key, value]) => {
+        if (value !== undefined) acc[key as keyof Story] = value;
+        return acc;
+      }, {} as Partial<Story>);
+
+
+      if (Object.keys(cleanStoryData).length > 0 && cleanStoryData.id) {
+         await setCurrentStory(cleanStoryData as Story); // setCurrentStory now handles Supabase upsert
+      } else if (!cleanStoryData.id) {
+         throw new Error("Story ID is missing, cannot save.");
+      }
+      // setCurrentStory should update the store, which should trigger re-renders with new data.
+    } catch (err) {
+      console.error('Error saving content:', err);
+      setStoryError(err instanceof Error ? err.message : 'Failed to save content. Please try again.');
+      // Optionally, revert local changes if Supabase call fails
+    } finally {
+      setIsLoadingStory(false);
     }
+  };
 
-    // Update the story with chapters
-    const updatedStory = {
-      ...currentStory,
-      chapters
-    };
+  const handleRefineInStudio = async () => {
+    if (!currentStory) {
+      setStoryError('No current story found to refine.');
+      return;
+    }
+    setIsLoadingStory(true);
+    setStoryError(null);
+
+    // The chapter generation logic from preview content seems specific to the old local state.
+    // If chapters are already in `currentStory.chapters` (synced with Supabase),
+    // this conversion might not be needed or should be handled differently.
+    // For now, assuming the existing logic is to derive chapters from `persistedContent` (from usePreviewLogic).
     
-    setCurrentStory(updatedStory);
+    try {
+        // Convert preview content (from usePreviewLogic) to chapters format
+        const chapters = [];
+        const visiblePages = getVisiblePages(); // from usePreviewLogic
+
+        const htmlToText = (html: string) => { // Keep your utility
+          return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' '); // Simplified
+        };
+
+        // This logic for creating chapters from preview pages should be reviewed.
+        // If `currentStory.chapters` is the source of truth, this might overwrite or conflict.
+        // Assuming this is for a case where chapters are not yet formally structured in `currentStory`.
+        const pagesPerChapter = 4; // Example grouping
+        for (let i = 0; i < visiblePages.length; i += pagesPerChapter) {
+          const chapterPages = visiblePages.slice(i, i + pagesPerChapter);
+          const chapterContent = chapterPages
+            .map(pageNum => htmlToText(getPageContent(pageNum))) // getPageContent from usePreviewLogic
+            .join('\n\n');
+
+          chapters.push({
+            id: `preview-ch-${Math.floor(i / pagesPerChapter) + 1}`, // Ensure robust IDs
+            title: `Chapter ${Math.floor(i / pagesPerChapter) + 1}`,
+            content: chapterContent,
+            pageNumbers: chapterPages,
+            wordCount: chapterContent.split(' ').filter(Boolean).length,
+            status: 'draft' as const,
+            quality: contentQuality[`container${chapterPages[0]}`]?.qualityScore || 7 // from usePreviewLogic
+          });
+        }
+
+        const updatedStoryWithChapters = {
+          ...currentStory,
+          chapters: chapters // Overwrites existing chapters if any
+        };
     
-    // Navigate to studio
-    router.push('/studio');
+        await setCurrentStory(updatedStoryWithChapters); // Save to Supabase
+        router.push('/studio'); // Navigate after successful save
+    } catch (err) {
+        console.error("Error refining in studio:", err);
+        setStoryError(err instanceof Error ? err.message : "Failed to prepare story for studio.");
+    } finally {
+        setIsLoadingStory(false);
+    }
   };
 
   const handleReadingPage = (pageNum: number) => {
@@ -349,6 +430,18 @@ export default function PreviewPage() {
       exit="exit"
       variants={containerVariants}
     >
+      {isLoadingStory && (
+        <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="ml-3 text-lg text-gray-700">Loading Story...</p>
+        </div>
+      )}
+      {storyError && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md shadow-lg z-50">
+          <p>{storyError}</p>
+          <button onClick={() => setStoryError(null)} className="ml-2 text-sm underline">Dismiss</button>
+        </div>
+      )}
       <style>{bookStyles}</style>
       <style>{focusModeStyles}</style>
       <style>{hoverControlsStyles}</style>

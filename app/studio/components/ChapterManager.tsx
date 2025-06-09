@@ -132,12 +132,14 @@ export default function ChapterManager({
   setPersistedContent,
   onTabChange
 }: ChapterManagerProps) {
-  const { updateStoryChapters } = useStoryStore();
+  const { currentStory: activeStory, updateStoryChapters, fetchStory } = useStoryStore();
   const [selectedChapter, setSelectedChapter] = useState<string | null>('toc');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'order' | 'title' | 'quality' | 'wordCount'>('order');
   const [isRegenerating, setIsRegenerating] = useState<Record<string, boolean>>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // For general loading state
+  const [error, setError] = useState<string | null>(null); // For error messages
   const [isReadingMode, setIsReadingMode] = useState(false);
   const [currentReadingPage, setCurrentReadingPage] = useState<number | null>(null);
 
@@ -230,265 +232,155 @@ export default function ChapterManager({
     return titles.slice(0, 10); // Limit to maximum 10 chapters
   };
 
-  // Initialize chapters from currentStory when available
+  // Initialize chapters from activeStory when available
   useEffect(() => {
-    if (currentStory?.chapters && currentStory.chapters.length > 0) {
-      setChapters(currentStory.chapters);
+    if (activeStory?.chapters && activeStory.chapters.length > 0) {
+      setChapters(activeStory.chapters);
+    } else if (activeStory?.id) {
+      // If there's an active story but no chapters, try fetching them (or handle empty state)
+      // This part depends on whether `fetchStory` re-populates chapters or if chapters are always part of `activeStory`
+      // For now, we assume if activeStory.chapters is empty, it means there are no chapters yet or they failed to load.
+      // A more robust solution might involve a specific loading state for chapters.
+      setChapters([]);
     } else {
-      // Get content from localStorage like the preview page does
-      const createChaptersFromContent = () => {
-        const persistedContent = typeof window !== 'undefined' 
-          ? JSON.parse(localStorage.getItem('previewContent') || '{}') 
-          : {};
-        
-        const currentPageCount = typeof window !== 'undefined' 
-          ? parseInt(localStorage.getItem('currentPageCount') || '8') 
-          : 8;
+        // Logic to create chapters from persistedContent (localStorage) if no active story
+        // This logic might need adjustment based on how stories are initiated and persisted before Supabase integration
+        const createChaptersFromLocalStorage = () => {
+          const localPersistedContent = typeof window !== 'undefined'
+            ? JSON.parse(localStorage.getItem('previewContent') || '{}')
+            : {};
 
-        const visiblePages = Array.from({ length: currentPageCount }, (_, i) => i + 1);
-        
-        if (visiblePages.length === 0) {
-          // Fallback mock data when no content exists
-          return [
-            {
-              id: '1',
-              title: 'The Beginning',
-              content: 'Chapter content...',
-              pageNumbers: [3],
-              wordCount: 1250,
-              status: 'final' as const,
-              quality: 8.5
-            },
-            {
-              id: '2', 
-              title: 'The Journey Starts',
-              content: 'Chapter content...',
-              pageNumbers: [4],
-              wordCount: 1400,
-              status: 'review' as const,
-              quality: 7.2
-            }
-          ];
-        }
+          const localCurrentPageCount = typeof window !== 'undefined'
+            ? parseInt(localStorage.getItem('currentPageCount') || '8')
+            : 8;
 
-        // Convert content to chapters (skip page 1 cover and page 2 TOC)
-        const chapters = [];
-        // Skip first 2 pages (cover and TOC) and start chapters from page 3
-        const chapterPages = visiblePages.slice(2); // Remove pages 1 and 2
-        
-        // Extract all chapter titles from TOC first (page 2)
-        const tocContent = persistedContent['container2'] || '';
-        const tocTitles = tocContent ? extractTitlesFromTOC(tocContent) : [];
-        
-        // Each page from page 3 onwards becomes its own chapter
-        for (let i = 0; i < chapterPages.length; i++) {
-          const pageNum = chapterPages[i];
-          const chapterContent = persistedContent[`container${pageNum}`] || '';
-
-          // Extract chapter title from content or use default
-          const extractTitle = (content: string, chapterIndex: number) => {
-            // First priority: Use TOC-extracted titles if available
-            if (tocTitles.length > chapterIndex) {
-              return tocTitles[chapterIndex];
-            }
-            
-            // Second priority: Extract from chapter content
-            const titleMatch = content.match(/<h[1-2][^>]*>(.*?)<\/h[1-2]>/i) ||
-                              content.match(/<strong[^>]*>(.*?)<\/strong>/i) ||
-                              content.match(/<b[^>]*>(.*?)<\/b>/i);
-            
-            if (titleMatch) {
-              const title = titleMatch[1].replace(/<[^>]*>/g, '').trim();
-              if (title.length > 0 && title.length < 100) {
-                return title;
-              }
-            }
-            
-            // Fallback: Default chapter naming
-            return `Chapter ${chapterIndex + 1}`;
-          };
-
-          const chapter = {
-            id: `chapter-${i + 1}`,
-            title: extractTitle(chapterContent, i),
-            content: chapterContent,
-            pageNumbers: [pageNum],
-            wordCount: htmlToText(chapterContent).split(' ').filter(word => word.length > 0).length,
-            status: 'final' as const,
-            quality: 7.5
-          };
-
-          chapters.push(chapter);
-        }
-
-        return chapters;
-      };
-
-      const newChapters = createChaptersFromContent();
-      setChapters(newChapters);
-      // Also update the story store
-      updateStoryChapters(newChapters);
-    }
-  }, [currentStory?.chapters, updateStoryChapters]);
-
-  // Listen for changes in localStorage to refresh chapters
-  useEffect(() => {
-    const refreshChapters = () => {
-      if (!currentStory?.chapters || currentStory.chapters.length === 0) {
-        // Recreate chapters from localStorage content
-        const persistedContent = typeof window !== 'undefined' 
-          ? JSON.parse(localStorage.getItem('previewContent') || '{}') 
-          : {};
-        
-        const currentPageCount = typeof window !== 'undefined' 
-          ? parseInt(localStorage.getItem('currentPageCount') || '8') 
-          : 8;
-
-        const visiblePages = Array.from({ length: currentPageCount }, (_, i) => i + 1);
-        
-        if (visiblePages.length > 0) {
-          const chapters = [];
+          const visiblePages = Array.from({ length: localCurrentPageCount }, (_, i) => i + 1);
           
-          // Extract all chapter titles from TOC first (page 2)
-          const tocContent = persistedContent['container2'] || '';
+          if (visiblePages.length === 0 || Object.keys(localPersistedContent).length === 0) {
+            return []; // No content to create chapters from
+          }
+
+          const generatedChapters = [];
+          const tocContent = localPersistedContent['container2'] || '';
           const tocTitles = tocContent ? extractTitlesFromTOC(tocContent) : [];
+          const chapterPages = visiblePages.slice(2);
           
-          // Skip first 2 pages (cover and TOC) and start chapters from page 3
-          const chapterPages = visiblePages.slice(2); // Remove pages 1 and 2
-          
-          // Each page from page 3 onwards becomes its own chapter
           for (let i = 0; i < chapterPages.length; i++) {
             const pageNum = chapterPages[i];
-            const chapterContent = persistedContent[`container${pageNum}`] || '';
+            const chapterContent = localPersistedContent[`container${pageNum}`] || '';
 
-            // Extract chapter title from content or use default
             const extractTitle = (content: string, chapterIndex: number) => {
-              // First priority: Use TOC-extracted titles if available
-              if (tocTitles.length > chapterIndex) {
-                return tocTitles[chapterIndex];
-              }
-              
-              // Second priority: Extract from chapter content
+              if (tocTitles.length > chapterIndex) return tocTitles[chapterIndex];
               const titleMatch = content.match(/<h[1-2][^>]*>(.*?)<\/h[1-2]>/i) ||
                                 content.match(/<strong[^>]*>(.*?)<\/strong>/i) ||
                                 content.match(/<b[^>]*>(.*?)<\/b>/i);
-              
               if (titleMatch) {
                 const title = titleMatch[1].replace(/<[^>]*>/g, '').trim();
-                if (title.length > 0 && title.length < 100) {
-                  return title;
-                }
+                if (title.length > 0 && title.length < 100) return title;
               }
-              
               return `Chapter ${chapterIndex + 1}`;
             };
 
-            const chapter = {
-              id: `chapter-${i + 1}`,
-              title: extractTitle(chapterContent, i),
-              content: chapterContent,
-              pageNumbers: [pageNum],
-              wordCount: htmlToText(chapterContent).split(' ').filter(word => word.length > 0).length,
-              status: 'final' as const,
-              quality: 7.5
-            };
-
-            chapters.push(chapter);
+            if (chapterContent.trim()) {
+              generatedChapters.push({
+                id: `chapter-${i + 1}`, // Consider generating more robust IDs
+                title: extractTitle(chapterContent, i),
+                content: chapterContent,
+                pageNumbers: [pageNum],
+                wordCount: htmlToText(chapterContent).split(' ').filter(Boolean).length,
+                status: 'draft' as const, // Default status
+                quality: 7.0 // Default quality
+              });
+            }
           }
-          
-          setChapters(chapters);
-          updateStoryChapters(chapters);
+          return generatedChapters;
+        };
+
+        const newChapters = createChaptersFromLocalStorage();
+        setChapters(newChapters);
+        // If these chapters should be part of a new story, you might need to create/set a new story in the store
+        // For now, just updating local state. If `currentStory` (prop) is null, this implies no story is loaded from DB.
+        // If `updateStoryChapters` is called, it will attempt a Supabase update if an activeStory exists.
+        // This might be an issue if there's no activeStory and we're just working off localStorage.
+        // Consider if `updateStoryChapters` should only be called when `activeStory` is present.
+        if (activeStory) { // Only update if there's an active story context
+            updateStoryChapters(newChapters).catch(err => {
+                console.error("Failed to update story chapters from localStorage init:", err);
+                setError("Failed to save initial chapters to cloud.");
+            });
         }
-      }
-    };
-
-    // Listen for storage events
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'previewContent' || e.key === 'currentPageCount') {
-        refreshChapters();
-      }
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('storage', handleStorageChange);
-      return () => window.removeEventListener('storage', handleStorageChange);
     }
-  }, [currentStory?.chapters, updateStoryChapters]);
+  }, [activeStory, updateStoryChapters, fetchStory]); // Added fetchStory to dependencies if it's used for re-fetching
 
-  // Initialize chapters from persistedContent prop when available
+  // Effect for handling chapters from props (persistedContent)
+  // This seems to be a fallback or alternative way to populate chapters if currentStory is not the source.
+  // Ensure this doesn't conflict with the activeStory logic.
   useEffect(() => {
-    if (persistedContent && Object.keys(persistedContent).length > 0 && currentPageCount > 0) {
+    if (persistedContent && Object.keys(persistedContent).length > 0 && currentPageCount > 0 && !activeStory?.chapters?.length) {
       const createChaptersFromProps = () => {
+        // ... (existing logic for createChaptersFromProps, ensure IDs are robust)
+        // Similar to the localStorage logic, this should be carefully considered in the context of Supabase.
+        // If these chapters are meant to be part of the `activeStory`, they should be saved via `updateStoryChapters`.
         const visiblePages = Array.from({ length: currentPageCount }, (_, i) => i + 1);
-        
-        if (visiblePages.length <= 2) {
-          return []; // Need at least cover and TOC
-        }
+        if (visiblePages.length <= 2) return [];
 
-        const chapters = [];
-        // Extract all chapter titles from TOC first (page 2)
+        const chaptersFromProps = [];
         const tocContent = persistedContent['container2'] || '';
         const tocTitles = tocContent ? extractTitlesFromTOC(tocContent) : [];
-        
-        // Skip first 2 pages (cover and TOC) and start chapters from page 3
-        const chapterPages = visiblePages.slice(2); // Remove pages 1 and 2
-        
-        // Each page from page 3 onwards becomes its own chapter
+        const chapterPages = visiblePages.slice(2);
+
         for (let i = 0; i < chapterPages.length; i++) {
           const pageNum = chapterPages[i];
           const chapterContent = persistedContent[`container${pageNum}`] || '';
-
-          if (chapterContent.trim()) { // Only create chapter if content exists
-            // Extract chapter title from content or use default
+          if (chapterContent.trim()) {
             const extractTitle = (content: string, chapterIndex: number) => {
-              // First priority: Use TOC-extracted titles if available
-              if (tocTitles.length > chapterIndex) {
-                return tocTitles[chapterIndex];
-              }
-              
-              // Second priority: Extract from chapter content
+              if (tocTitles.length > chapterIndex) return tocTitles[chapterIndex];
               const titleMatch = content.match(/<h[1-2][^>]*>(.*?)<\/h[1-2]>/i) ||
                                 content.match(/<strong[^>]*>(.*?)<\/strong>/i) ||
                                 content.match(/<b[^>]*>(.*?)<\/b>/i);
-              
               if (titleMatch) {
                 const title = titleMatch[1].replace(/<[^>]*>/g, '').trim();
-                if (title.length > 0 && title.length < 100) {
-                  return title;
-                }
+                if (title.length > 0 && title.length < 100) return title;
               }
-              
               return `Chapter ${chapterIndex + 1}`;
             };
-
-            const chapter = {
-              id: `chapter-${i + 1}`,
+            chaptersFromProps.push({
+              id: `prop-chapter-${i + 1}`, // Ensure robust IDs
               title: extractTitle(chapterContent, i),
               content: chapterContent,
               pageNumbers: [pageNum],
-              wordCount: htmlToText(chapterContent).split(' ').filter(word => word.length > 0).length,
-              status: 'final' as const,
-              quality: 7.5
-            };
-
-            chapters.push(chapter);
+              wordCount: htmlToText(chapterContent).split(' ').filter(Boolean).length,
+              status: 'draft' as const,
+              quality: 7.0
+            });
           }
         }
-
-        return chapters;
+        return chaptersFromProps;
       };
 
       const newChapters = createChaptersFromProps();
       if (newChapters.length > 0) {
         setChapters(newChapters);
-        updateStoryChapters(newChapters);
+        if (activeStory) { // Only update if there's an active story context
+            updateStoryChapters(newChapters).catch(err => {
+                console.error("Failed to update story chapters from props:", err);
+                setError("Failed to save chapters from props to cloud.");
+            });
+        }
       }
     }
-  }, [persistedContent, currentPageCount, updateStoryChapters]);
+  }, [persistedContent, currentPageCount, activeStory, updateStoryChapters]);
+
 
   const filteredChapters = chapters
     .filter(chapter => 
-      chapter.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      chapter?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      chapter?.content?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'title':
+          return a.title.localeCompare(b.title);
       chapter.content.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
@@ -505,74 +397,100 @@ export default function ChapterManager({
     });
 
   const handleSaveContent = async (content: string, pageNum: number) => {
+    if (!activeStory) {
+      setError("No active story to save to. Please load or create a story.");
+      return;
+    }
     setIsSaving(true);
+    setError(null);
     try {
-      // Update the persisted content
+      // Update the persisted content locally first for responsiveness
       const newPersistedContent = {
         ...persistedContent,
         [`container${pageNum}`]: content
       };
-      setPersistedContent(newPersistedContent);
-      
-      // Update localStorage
+      setPersistedContent(newPersistedContent); // Assuming this updates parent/local state if needed
+
       if (typeof window !== 'undefined') {
         localStorage.setItem('previewContent', JSON.stringify(newPersistedContent));
       }
       
-      // Refresh chapters to reflect changes
-      const refreshChapters = () => {
-        const visiblePages = Array.from({ length: currentPageCount }, (_, i) => i + 1);
-        const chapterPages = visiblePages.slice(2);
-        
-        const updatedChapters = chapters.map(chapter => {
-          if (chapter.pageNumbers[0] === pageNum) {
-            return {
-              ...chapter,
-              content: content,
-              wordCount: htmlToText(content).split(' ').filter(word => word.length > 0).length
-            };
-          }
-          return chapter;
-        });
-        
-        setChapters(updatedChapters);
-        updateStoryChapters(updatedChapters);
-      };
+      const updatedChapters = chapters.map(chapter => {
+        if (chapter.pageNumbers.includes(pageNum)) {
+          // If multiple chapters could share a page (not typical), this needs refinement.
+          // Assuming one chapter per page for now based on existing logic.
+          return {
+            ...chapter,
+            content: content, // Or update specific part of content if chapter spans multiple pages
+            wordCount: htmlToText(content).split(' ').filter(Boolean).length
+          };
+        }
+        return chapter;
+      });
       
-      refreshChapters();
+      setChapters(updatedChapters); // Update local state immediately
+      await updateStoryChapters(updatedChapters); // Persist to Supabase
+      // Optionally, re-fetch or use returned data from updateStoryChapters if it provides updated story object
+    } catch (err) {
+      console.error("Error saving content:", err);
+      setError("Failed to save chapter content. Please try again.");
+      // Optionally, revert local changes or notify user
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleRegenerateChapter = async (chapterId: string) => {
+    // This function seems to simulate regeneration and update local state.
+    // If regeneration involves AI or backend calls, it should be async and handle loading/errors.
     setIsRegenerating(prev => ({ ...prev, [chapterId]: true }));
+    setError(null);
     try {
-      // Simulate regeneration
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Placeholder for actual regeneration logic (e.g., API call)
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate async operation
       
-      setChapters(prev => 
-        prev.map(ch => 
-          ch.id === chapterId 
-            ? { ...ch, quality: Math.min(10, ch.quality + 0.5), status: 'review' as const }
-            : ch
-        )
+      const updatedChapters = chapters.map(ch =>
+        ch.id === chapterId
+          ? { ...ch, content: `${ch.content} (Regenerated)`, quality: Math.min(10, ch.quality + 0.5), status: 'review' as const }
+          : ch
       );
+      setChapters(updatedChapters);
+      await updateStoryChapters(updatedChapters); // Save changes to Supabase
+    } catch (err) {
+      console.error("Error regenerating chapter:", err);
+      setError("Failed to regenerate chapter.");
     } finally {
       setIsRegenerating(prev => ({ ...prev, [chapterId]: false }));
     }
   };
 
-  const handleDeleteChapter = (chapterId: string) => {
-    if (confirm('Are you sure you want to delete this chapter?')) {
-      setChapters(prev => prev.filter(ch => ch.id !== chapterId));
-      if (selectedChapter === chapterId) {
-        setSelectedChapter(null);
+  const handleDeleteChapter = async (chapterId: string) => {
+    if (!activeStory) {
+      setError("No active story. Cannot delete chapter.");
+      return;
+    }
+    if (confirm('Are you sure you want to delete this chapter and its content? This action might be irreversible.')) {
+      setIsLoading(true); // Use general loading for delete operation
+      setError(null);
+      try {
+        const updatedChapters = chapters.filter(ch => ch.id !== chapterId);
+        setChapters(updatedChapters); // Update local state
+        await updateStoryChapters(updatedChapters); // Persist to Supabase
+
+        if (selectedChapter === chapterId) {
+          setSelectedChapter('toc'); // Go back to TOC or null
+        }
+      } catch (err) {
+        console.error("Error deleting chapter:", err);
+        setError("Failed to delete chapter. Please try again.");
+        // Optionally, revert local state if Supabase update fails
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status?: string) => {
     switch (status) {
       case 'final': return 'text-green-700 bg-green-100';
       case 'review': return 'text-yellow-700 bg-yellow-100';
@@ -664,7 +582,7 @@ export default function ChapterManager({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleRegenerateChapter(chapter.id)}
-                          disabled={isRegenerating[chapter.id]}
+                          disabled={isRegenerating[chapter.id] || isLoading}
                           className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-gray-700"
                         >
                           {isRegenerating[chapter.id] ? (
@@ -677,7 +595,7 @@ export default function ChapterManager({
 
                         <button
                           onClick={() => handleSaveContent(chapter.content, chapter.pageNumbers[0])}
-                          disabled={isSaving}
+                          disabled={isSaving || isLoading}
                           className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-gray-700"
                         >
                           {isSaving ? (
@@ -690,7 +608,8 @@ export default function ChapterManager({
 
                         <button
                           onClick={() => handlePreviewChapter(chapter)}
-                          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-700"
+                          disabled={isLoading}
+                          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-700 disabled:opacity-50"
                         >
                           <Eye className="w-4 h-4" />
                           Preview
@@ -698,7 +617,8 @@ export default function ChapterManager({
                         
                         <button
                           onClick={() => handleDeleteChapter(chapter.id)}
-                          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-700 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
+                          disabled={isLoading}
+                          className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-700 hover:text-red-600 hover:border-red-200 hover:bg-red-50 disabled:opacity-50"
                         >
                           <Trash2 className="w-4 h-4" />
                           Delete
@@ -712,6 +632,18 @@ export default function ChapterManager({
 
             {/* Chapter Content */}
             <div className="flex-1 p-6 overflow-y-auto">
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-md">
+                  <p><strong>Error:</strong> {error}</p>
+                  <button onClick={() => setError(null)} className="ml-2 text-sm underline">Dismiss</button>
+                </div>
+              )}
+              {isLoading && selectedChapter !== 'toc' && ( // Show loading indicator when a chapter is loading its content or performing an action
+                <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+                  <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <p className="ml-2 text-gray-700">Loading chapter...</p>
+                </div>
+              )}
               {selectedChapter === 'toc' ? (
                 // TOC Content
                 <div className="prose max-w-none">
@@ -783,7 +715,7 @@ export default function ChapterManager({
                     key={`chapter-${chapter.id}-${chapter.pageNumbers[0]}`} // Force remount when chapter changes
                     chapter={chapter} 
                     onSave={(content: string) => handleSaveContent(content, chapter.pageNumbers[0])}
-                    isSaving={isSaving}
+                    isSaving={isSaving || isLoading} // Pass general loading state as well
                   />;
                 })()
               )}
