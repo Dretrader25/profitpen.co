@@ -142,8 +142,8 @@ export default function PublishingTools({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Publishing Tools</h2>
-          <p className="text-gray-600">Export your book and publish to various platforms</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Reporting & Export Tools</h2> {/* Changed */}
+          <p className="text-gray-600">Export your leads and property data and manage integrations</p> {/* Changed */}
         </div>
         
         <div className="flex items-center gap-3">
@@ -163,12 +163,12 @@ export default function PublishingTools({
             onClick={() => router.push('/preview')}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
-            Preview Book
+            Preview Report {/* Changed */}
           </motion.button>
         </div>
       </div>
 
-      {/* Book Status */}
+      {/* Data Status */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -176,16 +176,16 @@ export default function PublishingTools({
               <Check className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Ready to Publish</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Data Ready for Export</h3> {/* Changed */}
               <p className="text-gray-600">
-                Your book has {currentPageCount} pages and is ready for export
+                Your current list has {currentPageCount} records and is ready for export {/* Changed */}
               </p>
             </div>
           </div>
           
           <div className="text-right">
             <div className="text-2xl font-bold text-gray-900">{currentPageCount}</div>
-            <div className="text-sm text-gray-600">Total Pages</div>
+            <div className="text-sm text-gray-600">Total Records</div> {/* Changed */}
           </div>
         </div>
       </div>
@@ -195,7 +195,13 @@ export default function PublishingTools({
         <h3 className="text-lg font-semibold text-gray-900">Export Formats</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {exportFormats.map((format) => {
+          {/* Updated export formats for real estate */}
+          {[
+            { id: 'csv', name: 'CSV', description: 'Comma-separated values for spreadsheets', icon: FileText, fileSize: '0.5 MB', compatibility: 'Excel, Google Sheets' },
+            { id: 'pdf', name: 'PDF Report', description: 'Formatted PDF property reports', icon: FileText, fileSize: '1.5 MB', compatibility: 'Universal' },
+            { id: 'xlsx', name: 'Excel XLSX', description: 'Native Excel format for analysis', icon: FileText, fileSize: '0.8 MB', compatibility: 'Microsoft Excel' },
+            { id: 'json', name: 'JSON', description: 'For developers and integrations', icon: FileText, fileSize: '0.4 MB', compatibility: 'APIs, Dev Tools' }
+          ].map((format) => {
             const Icon = format.icon;
             const isSelected = exportFormat === format.id;
             
@@ -221,8 +227,8 @@ export default function PublishingTools({
                 <p className="text-sm text-gray-600 mb-3">{format.description}</p>
                 
                 <div className="space-y-1 text-xs text-gray-500">
-                  <div>Size: {format.fileSize}</div>
-                  <div>Works with: {format.compatibility}</div>
+                  <div>Est. Size: {format.fileSize}</div> {/* Changed */}
+                  <div>Use with: {format.compatibility}</div> {/* Changed */}
                 </div>
               </motion.div>
             );
@@ -261,10 +267,10 @@ export default function PublishingTools({
         )}
       </div>
 
-      {/* Publishing Platforms */}
+      {/* CRM / Marketing Integrations */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Publishing Platforms</h3>
+          <h3 className="text-lg font-semibold text-gray-900">CRM / Marketing Integrations</h3> {/* Changed */}
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Crown className="w-4 h-4 text-yellow-500" />
             Pro features available
@@ -272,9 +278,13 @@ export default function PublishingTools({
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {publishingPlatforms.map((platform) => {
+          {/* Example Integrations - update as needed */}
+          {[
+            { id: 'salesforce', name: 'Salesforce', description: 'Sync leads with Salesforce CRM', icon: Upload, requirements: ['API Key', 'Object Mapping'], marketShare: 'Popular' },
+            { id: 'mailchimp', name: 'Mailchimp', description: 'Add leads to email campaigns', icon: Share2, requirements: ['API Key', 'Audience ID'], marketShare: 'Widely Used' }
+          ].map((platform) => {
             const Icon = platform.icon;
-            const isSelected = publishingPlatform === platform.id;
+            const isSelected = publishingPlatform === platform.id; // publishingPlatform state might be repurposed or renamed
             
             return (
               <motion.div
@@ -303,7 +313,7 @@ export default function PublishingTools({
                 </div>
                 
                 <div className="space-y-2 mb-4">
-                  <div className="text-sm font-medium text-gray-700">Requirements:</div>
+                  <div className="text-sm font-medium text-gray-700">Setup:</div>
                   <ul className="text-sm text-gray-600 space-y-1">
                     {platform.requirements.map((req, index) => (
                       <li key={index} className="flex items-center gap-2">
@@ -319,13 +329,13 @@ export default function PublishingTools({
                   whileTap={{ scale: 0.98 }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handlePublish(platform.id);
+                    handlePublish(platform.id); // This function would need to be adapted
                   }}
                   className="w-full py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
                 >
                   <div className="flex items-center justify-center gap-2">
                     <ExternalLink className="w-4 h-4" />
-                    Publish to {platform.name.split(' ')[0]}
+                    Configure {platform.name.split(' ')[0]}
                   </div>
                 </motion.button>
               </motion.div>
@@ -348,25 +358,25 @@ export default function PublishingTools({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Page Size
+                  Report Layout {/* Changed */}
                 </label>
                 <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>A4 (8.5" x 11")</option>
-                  <option>US Letter (8.5" x 11")</option>
-                  <option>Kindle (6" x 9")</option>
-                  <option>Custom</option>
+                  <option>Standard Property Report</option>
+                  <option>Lead Summary Sheet</option>
+                  <option>Full Data Export</option>
+                  <option>Custom Layout</option>
                 </select>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Font Family
+                  Data Fields to Include {/* Changed */}
                 </label>
                 <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>Times New Roman</option>
-                  <option>Georgia</option>
-                  <option>Palatino</option>
-                  <option>Garamond</option>
+                  <option>Core Data</option>
+                  <option>Extended Data</option>
+                  <option>All Available Data</option>
+                  <option>Custom Field Selection</option>
                 </select>
               </div>
             </div>
@@ -374,12 +384,12 @@ export default function PublishingTools({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Chapter Breaks
+                  CSV Delimiter {/* Changed */}
                 </label>
                 <select className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>New Page</option>
-                  <option>New Line</option>
-                  <option>Custom Spacing</option>
+                  <option>Comma (,)</option>
+                  <option>Semicolon (;)</option>
+                  <option>Tab</option>
                 </select>
               </div>
               
@@ -391,7 +401,7 @@ export default function PublishingTools({
                   defaultChecked
                 />
                 <label htmlFor="includeTableOfContents" className="text-sm font-medium text-gray-700">
-                  Include Table of Contents
+                  Include Summary Section {/* Changed */}
                 </label>
               </div>
               
@@ -403,7 +413,7 @@ export default function PublishingTools({
                   defaultChecked
                 />
                 <label htmlFor="includePageNumbers" className="text-sm font-medium text-gray-700">
-                  Include Page Numbers
+                  Include Record IDs {/* Changed */}
                 </label>
               </div>
             </div>
@@ -422,8 +432,8 @@ export default function PublishingTools({
             className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left"
           >
             <Share2 className="w-6 h-6 text-blue-600 mb-2" />
-            <div className="font-medium text-gray-900">Share Preview</div>
-            <div className="text-sm text-gray-600">Generate shareable link</div>
+            <div className="font-medium text-gray-900">Share Report Link</div> {/* Changed */}
+            <div className="text-sm text-gray-600">Generate shareable link for reports</div> {/* Changed */}
           </motion.button>
           
           <motion.button
@@ -432,8 +442,8 @@ export default function PublishingTools({
             className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left"
           >
             <Package className="w-6 h-6 text-green-600 mb-2" />
-            <div className="font-medium text-gray-900">Create Bundle</div>
-            <div className="text-sm text-gray-600">Multiple formats at once</div>
+            <div className="font-medium text-gray-900">Bulk Export</div> {/* Changed */}
+            <div className="text-sm text-gray-600">Export multiple records or lists</div> {/* Changed */}
           </motion.button>
           
           <motion.button
@@ -442,8 +452,8 @@ export default function PublishingTools({
             className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left"
           >
             <Zap className="w-6 h-6 text-purple-600 mb-2" />
-            <div className="font-medium text-gray-900">Quick Publish</div>
-            <div className="text-sm text-gray-600">One-click to multiple platforms</div>
+            <div className="font-medium text-gray-900">Send to CRM</div> {/* Changed */}
+            <div className="text-sm text-gray-600">Push selected leads to integrated CRM</div> {/* Changed */}
           </motion.button>
         </div>
       </div>

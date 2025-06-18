@@ -1,68 +1,68 @@
-export const generateStoryConceptPrompt = (idea: string, genre: string, tone: string, audience: string) => `You are a New York Times bestselling author and Hollywood story consultant with 20+ years of experience creating compelling narratives that captivate readers from the first page. Your stories have been adapted into major films and have won prestigious literary awards.
+export const generateStoryConceptPrompt = (addressOrQuery: string, searchType: string, detailLevel: string, userProfile: string) => `You are an expert real estate analyst and property data enrichment specialist with 20+ years of experience in providing accurate and comprehensive property intelligence. Your insights are trusted by top investors, realtors, and financial institutions.
 
-    MISSION: Create a story concept so compelling that readers will be instantly hooked and unable to put it down.
+    MISSION: Generate a comprehensive property data profile based on an address or query, providing actionable insights and detailed information.
 
-    Story Parameters:
-    Core Idea: ${idea}
-    Genre: ${genre}
-    Tone: ${tone}
-    Target Audience: ${audience}
+    Search Parameters:
+    Property Address/Query: ${addressOrQuery}
+    Search Type: ${searchType}
+    Report Detail Level: ${detailLevel}
+    User Profile: ${userProfile}
     
-    QUALITY STANDARDS: This story concept must be:
-    ✓ IMMEDIATELY CAPTIVATING - Hook readers within the first sentence
-    ✓ EMOTIONALLY RESONANT - Create instant emotional connection
-    ✓ PROFESSIONALLY POLISHED - Publication-ready quality
-    ✓ UNIQUELY MEMORABLE - Stand out from generic ${genre} stories
-    ✓ COMMERCIALLY VIABLE - Market-tested appeal for ${audience} readers
+    QUALITY STANDARDS: This property data profile must be:
+    ✓ HIGHLY ACCURATE - Data verified from multiple sources where possible.
+    ✓ DATA-RICH - Include a comprehensive set of relevant data points.
+    ✓ PROFESSIONALLY PRESENTED - Clear, concise, and well-organized information.
+    ✓ ACTIONABLE INSIGHTS - Highlight key factors for decision-making.
+    ✓ RELEVANT to ${userProfile} - Tailor information density and focus to the user profile.
 
     CONTENT SPECIFICATIONS:
-    - Premise: 2-3 sentences that create instant intrigue (45-65 words)
-    - Short Draft: Compelling 180-220 word synopsis that builds excitement
-    - Themes: 3-4 powerful, emotionally-charged themes (3-6 words each)
+    - Key Property Highlights & Potential: 2-3 sentences summarizing the most critical aspects and opportunities (45-65 words).
+    - Detailed Property Overview: Comprehensive details including beds, baths, sqft, lot size, year built, property type, etc. (180-220 words).
+    - Key Data Categories: 3-4 main categories of data provided, like Ownership, Tax Info, Sales History, Market Comparables (3-6 words each).
     
     Return ONLY a valid JSON object with the following structure, with no additional text or explanation:
     {
-      "title": "A magnetic, unforgettable title that demands attention",
-      "premise": "An irresistible hook that makes readers desperate to know what happens next",
-      "shortDraft": "A masterfully crafted synopsis that builds suspense and emotional investment, leaving readers craving the full story",
-      "themes": "3-4 profound, universally resonant themes separated by newlines",
-      "worldBuilding": {
-        "setting": "A vivid, immersive world that feels authentic and lived-in",
-        "geography": "Distinctive locations that enhance the story's atmosphere",
-        "rules": ["Fascinating world mechanics that intrigue readers", "Unique elements that set this world apart"],
-        "cultures": ["Rich cultural details that add depth", "Compelling social dynamics that drive conflict"]
+      "title": "Property Address & Brief Summary (e.g., 123 Main St, Anytown, USA - 3 Bed/2 Bath SFR with Renovation Potential)",
+      "premise": "Key Property Highlights & Potential (e.g., High equity property in appreciating area, suitable for fix-and-flip or long-term rental.)",
+      "shortDraft": "Detailed Property Overview (e.g., Single Family Residence, 3 bedrooms, 2 bathrooms, 1500 sqft living area, 0.25 acre lot, built in 1985. Last sold 2015. Features updated kitchen but needs new roof.)",
+      "themes": "Key Data Categories (e.g., Ownership & Legal\\nTax Assessment & History\\nSales & Comparables\\nNeighborhood & Market Data)",
+      "locationContext": { // Renamed from worldBuilding
+        "setting": "Neighborhood & Area Overview (e.g., Quiet suburban street, close to schools and parks. Good walkability score.)",
+        "geography": "Local Amenities & Points of Interest (e.g., Anytown Mall (2 miles), City Park (0.5 miles), Anytown Elementary School (0.3 miles))",
+        "rules": ["Zoning Regulations & Permits (e.g., R-1 Single Family Residential, No recent major permits found)", "HOA Information (if applicable, e.g., HOA Dues: $50/month, covers landscaping)"],
+        "cultures": ["Demographics & School District Info (e.g., Predominantly families, Anytown ISD - Rated B+)", "Local Market Sentiment (e.g., Strong seller's market, low inventory)"]
       },
-      "characterFramework": {
-        "mainCharacter": {
-          "name": "A memorable, meaningful character name",
-          "role": "Compelling protagonist with clear stakes",
-          "personality": "Complex, relatable traits with internal conflicts that drive the story"
+      "ownershipAndContacts": { // Renamed from characterFramework
+        "currentOwner": {
+          "name": "Owner Name(s) (e.g., John & Jane Doe or ABC Trust)",
+          "role": "Current Owner", // Static role
+          "personality": "Contact Details & Notes (e.g., Phone: 555-1234, Email: owner@example.com. Notes: Potential motivated seller, out-of-state.)"
         },
-        "supportingCharacters": [
+        "previousOwnersOrAssociatedContacts": [ // Renamed
           {
-            "name": "Dynamic supporting character name",
-            "role": "Essential ally/mentor with their own agenda",
-            "personality": "Distinctive voice and compelling personal stakes"
+            "name": "Previous Owner Name or Associated Contact (e.g., Realtor, Property Manager)",
+            "role": "Previous Owner / Realtor / Tenant", // Example roles
+            "personality": "Relevant details or contact information if available"
           }
         ],
-        "antagonist": {
-          "name": "Formidable, memorable antagonist name",
-          "role": "Worthy opponent with understandable motivations",
-          "personality": "Complex villain readers will love to hate"
+        "marketRisksOrPropertyIssues": { // Renamed from antagonist
+          "name": "Key Risks or Issues (e.g., Tax Lien, Deferred Maintenance, Market Downturn)",
+          "role": "Potential Deal Blocker / Value Reducer",
+          "personality": "Details of the risk/issue (e.g., $5,000 tax lien filed on 01/01/2023. Roof needs replacement, est. $10k.)"
         }
       },
-      "storyStructure": {
-        "beginning": "Explosive opening that establishes character, conflict, and stakes immediately",
-        "turningPoints": "3 shocking revelations that completely change the game",
-        "climax": "Heart-stopping confrontation where everything hangs in the balance",
-        "resolution": "Satisfying conclusion that leaves readers emotionally fulfilled yet wanting more"
+      "transactionHistoryAndPotential": { // Renamed from storyStructure
+        "beginning": "Last Sale Information (Date, Price) (e.g., Sold on 05/15/2015 for $250,000)",
+        "turningPoints": "Key Events (e.g., Major Renovation 2018, Lis Pendens Filed 03/2024, New School District Zoning 2022)", // Changed to string from array for simplicity here
+        "climax": "Estimated Value & Investment Potential (e.g., ARV: $400,000, Est. Rent: $2,500/mo, Cap Rate: 6%)",
+        "resolution": "Actionable Next Steps & Recommendations (e.g., Recommend site visit, order full title report, prepare offer based on comps.)"
       }
     }
 
     EXECUTION REQUIREMENTS:
-    1. Every element must feel FRESH and UNEXPECTED for the ${genre} genre
-    2. Create immediate emotional investment in the protagonist's journey
-    3. Build tension and stakes that escalate throughout the concept
-    4. Ensure the premise could sustain reader interest for 200+ pages
-    5. Make the antagonist as compelling as the protagonist
-    6. Weave themes naturally into character motivations and plot progression`; 
+    1. All data points must be realistic and plausible for a typical property of the type queried.
+    2. Provide information that is directly useful for a ${userProfile} making decisions about this property/lead.
+    3. Ensure data consistency across different sections of the JSON output.
+    4. If a specific data point is not typically available or applicable, indicate "N/A" or omit cleanly.
+    5. Focus on providing factual data points rather than speculative narratives.
+    6. Format themes (Key Data Categories) with newlines if providing multiple.`;

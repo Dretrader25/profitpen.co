@@ -38,10 +38,10 @@ export default function PreviewControls({
         transition={{ duration: 0.6 }}
       >
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-          Preview Your Book
+          Review Your Property Data {/* Changed */}
         </h1>
         <p className="text-gray-300 text-lg">
-          Review your content before export • {currentPageCount} pages generated
+          Review your data before export • {currentPageCount} records found {/* Changed */}
         </p>
       </motion.div>
 
@@ -63,7 +63,7 @@ export default function PreviewControls({
           onClick={() => setIsExportModalOpen(true)}
           className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
         >
-          Export Book
+          Export Report/Data {/* Changed */}
         </button>
         
         <button
@@ -71,7 +71,7 @@ export default function PreviewControls({
           disabled={isGeneratingMore || currentPageCount >= maxPages}
           className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg disabled:hover:scale-100"
         >
-          {isGeneratingMore ? 'Generating...' : 'Generate More Pages'}
+          {isGeneratingMore ? 'Loading Data...' : 'Load More Sections/Data'} {/* Changed */}
         </button>
       </motion.div>
 

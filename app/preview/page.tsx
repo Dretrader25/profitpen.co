@@ -414,7 +414,7 @@ export default function PreviewPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>Refine in Studio</span>
+                  <span>Analyze Lead Details</span> {/* Changed */}
                 </div>
               </motion.button>
             </div>
@@ -433,7 +433,7 @@ export default function PreviewPage() {
                   <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-700 mr-6">Daily Credits</span>
+                  <span className="text-sm font-medium text-gray-700 mr-6">Daily Searches</span> {/* Changed */}
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-3">
@@ -684,7 +684,7 @@ export default function PreviewPage() {
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
-                Reading
+                Report View {/* Changed */}
               </button>
               <button
                 onClick={() => setIsReadingMode(false)}
@@ -698,7 +698,7 @@ export default function PreviewPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Preview
+                Grid View {/* Changed */}
               </button>
             </div>
 
@@ -816,7 +816,7 @@ export default function PreviewPage() {
                         e.stopPropagation();
                         handleRemovePage(pageNum);
                       }}
-                      title="Remove page"
+                      title="Remove Section/Property" // Changed
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -826,7 +826,7 @@ export default function PreviewPage() {
                       className="control-button regenerate"
                       onClick={() => handlePageRegeneration(pageNum)}
                       disabled={isRegenerating[pageNum]}
-                      title="Regenerate page"
+                      title="Refresh Data" // Changed
                     >
                       {isRegenerating[pageNum] ? (
                         <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin" />
@@ -839,7 +839,7 @@ export default function PreviewPage() {
                     <button 
                       className="control-button zoom"
                       onClick={() => handleZoomPage(pageNum)}
-                      title="View full page"
+                      title="View Details" // Changed
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -887,20 +887,20 @@ export default function PreviewPage() {
             {isGeneratingMore ? (
               <>
                 <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin" />
-                <span>Generating...</span>
+                <span>Loading Data...</span> {/* Changed */}
               </>
             ) : currentPageCount >= maxPages ? (
               <>
-                <span className="text-gray-400">Maximum Pages Reached</span>
+                <span className="text-gray-400">Maximum Data Sections Reached</span> {/* Changed */}
               </>
             ) : (
               <>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <span>Generate More Pages</span>
+                <span>Load More Data</span> {/* Changed */}
                 <span className="text-sm text-gray-700">
-                  ({currentPageCount}/{maxPages})
+                  ({currentPageCount}/{maxPages} sections) {/* Changed */}
                 </span>
               </>
             )}

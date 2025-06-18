@@ -12,50 +12,50 @@ export type DashboardTab = 'dashboard' | 'overview' | 'chapters' | 'characters' 
 
 const tabConfigs = {
   dashboard: {
-    title: 'Dashboard',
-    description: 'Your writing workspace overview',
-    icon: '📊',
+    title: 'Lead Dashboard', // Changed
+    description: 'Your real estate lead overview', // Changed
+    icon: '📊', // Icon can remain or be updated if a better one is available
     component: DashboardOverview
   },
   overview: {
-    title: 'Overview',
-    description: 'Book summary and quick actions',
+    title: 'Summary', // Changed (as it redirects to studio/overview)
+    description: 'Lead generation summary & quick actions', // Changed
     icon: '📖',
     redirectToStudio: true
   },
   chapters: {
-    title: 'Chapters',
-    description: 'Manage and edit chapters',
+    title: 'Properties/Leads', // Changed
+    description: 'Manage properties & leads', // Changed
     icon: '📑',
     redirectToStudio: true
   },
   characters: {
-    title: 'Characters',
-    description: 'Character development and profiles',
+    title: 'Contacts', // Changed
+    description: 'Manage contacts & owner info', // Changed
     icon: '👥',
     redirectToStudio: true
   },
   plot: {
-    title: 'Plot',
-    description: 'Story structure and outline',
+    title: 'Deal Workflow', // Changed
+    description: 'Deal workflow & follow-ups', // Changed
     icon: '🗺️',
     redirectToStudio: true
   },
   analytics: {
-    title: 'Analytics',
-    description: 'Content quality and insights',
+    title: 'Market Analytics', // Changed
+    description: 'Market analytics & lead scores', // Changed
     icon: '📊',
     redirectToStudio: true
   },
   publishing: {
-    title: 'Publishing',
-    description: 'Export and publishing tools',
+    title: 'Reports/Exports', // Changed
+    description: 'Export leads & generate reports', // Changed
     icon: '🚀',
     redirectToStudio: true
   },
   settings: {
-    title: 'Settings',
-    description: 'Studio preferences',
+    title: 'Preferences', // Changed
+    description: 'Application preferences', // Changed
     icon: '⚙️',
     redirectToStudio: true
   }

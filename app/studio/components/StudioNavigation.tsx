@@ -76,11 +76,11 @@ export default function StudioNavigation({
                   className="flex items-center gap-3"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">PS</span>
+                    <span className="text-white font-bold text-sm">PA</span> {/* PropAnalyzed short */}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-sm">ProfitPen Studio</h3>
-                    <p className="text-xs text-gray-500">Creative Workspace</p>
+                    <h3 className="font-semibold text-gray-900 text-sm">PropAnalyzed Lead Dashboard</h3>
+                    <p className="text-xs text-gray-500">Lead Analysis Workspace</p>
                   </div>
                 </motion.div>
               )}
@@ -115,14 +115,14 @@ export default function StudioNavigation({
                 <div className="flex items-center gap-4 text-xs text-gray-600">
                   <span className="flex items-center gap-1">
                     <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    {pageCount} pages
+                    {pageCount} data points {/* Changed */}
                   </span>
                   <span className="flex items-center gap-1">
                     <span className={`w-2 h-2 rounded-full ${
                       qualityScore >= 8 ? 'bg-green-500' : 
                       qualityScore >= 6 ? 'bg-yellow-500' : 'bg-red-500'
                     }`}></span>
-                    {qualityScore}/10
+                    {qualityScore}/10 data integrity {/* Changed/Added context */}
                   </span>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function StudioNavigation({
                   animate={sidebarCollapsed ? 'collapsed' : 'expanded'}
                   className="text-sm"
                 >
-                  Preview
+                  View Report
                 </motion.span>
               )}
             </button>

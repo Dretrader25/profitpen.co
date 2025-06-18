@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -8,11 +9,11 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <a href="/" className="inline-block">
               <div className="mb-4">
-                <h2 className="text-2xl font-medium text-gray-900">profitpen</h2>
+                <h2 className="text-2xl font-medium text-gray-900">PropAnalyzed</h2>
               </div>
             </a>
             <p className="text-gray-600 text-sm max-w-md">
-              Create amazing stories with AI-powered assistance. Transform your ideas into compelling narratives with our advanced story generation platform.
+              Unlock property data and insights with AI. Find and qualify real estate leads with our advanced analytics platform.
             </p>
           </div>
           <div>
@@ -20,12 +21,12 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a className="text-gray-600 hover:text-gray-900 text-sm transition-colors" href="/studio">
-                  Story Studio
+                  Lead Dashboard
                 </a>
               </li>
               <li>
                 <a className="text-gray-600 hover:text-gray-900 text-sm transition-colors" href="/preview">
-                  Preview & Export
+                  Property Reports
                 </a>
               </li>
               <li>
@@ -58,7 +59,7 @@ const Footer = () => {
         </div>
         <div className="mt-8 pt-8 border-t border-gray-200">
           <p className="text-sm text-gray-600">
-            © 2025 ProfitPen. All rights reserved.
+            © {currentYear} PropAnalyzed. All rights reserved.
           </p>
         </div>
       </div>

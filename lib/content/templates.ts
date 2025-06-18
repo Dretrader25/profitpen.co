@@ -1,209 +1,150 @@
-// Content templates for creating impressive preview experiences
+// lib/content/templates.ts
+// Content templates for real estate lead generation and property analysis
 
-export const IMPRESSIVE_OPENING_TEMPLATES = {
-  thriller: {
-    hooks: [
-      "The last thing [CHARACTER] remembered was the sound of footsteps following them home.",
-      "When [CHARACTER] woke up, they weren't in their own bed.",
-      "The message was clear: they had 24 hours to comply, or everyone they loved would pay."
+export const REAL_ESTATE_SEARCH_QUERY_EXAMPLES = {
+  distressedProperties: {
+    examples: [
+      "Pre-foreclosures in 75201 last 30 days",
+      "Vacant properties in Maricopa County, AZ with high equity",
+      "Homes with tax liens in Tampa, FL",
+      "Probate leads in King County, WA",
+      "Properties with code violations in Detroit, MI"
     ],
-    atmospheres: [
-      "The city never slept, but tonight it held its breath, waiting for something terrible to unfold.",
-      "Shadows moved differently in this part of town, as if they knew secrets that daylight couldn't reveal.",
-      "The silence was wrong—not peaceful, but predatory, like a hunter waiting for the perfect moment to strike."
+    descriptions: [
+      "Find properties facing potential foreclosure.",
+      "Identify unoccupied homes that might indicate motivated sellers.",
+      "Discover properties with outstanding tax debts.",
+      "Locate properties involved in probate proceedings.",
+      "Target properties with documented maintenance issues."
     ]
   },
-  romance: {
-    hooks: [
-      "[CHARACTER] had sworn off love completely—until they walked into the coffee shop that Tuesday morning.",
-      "The wedding invitation arrived on the same day [CHARACTER] decided to leave town forever.",
-      "After ten years of avoiding their hometown, [CHARACTER] had exactly one reason to return: closure."
+  investorFocused: {
+    examples: [
+      "Multi-family units in Austin, TX with value-add potential",
+      "Cash buyer activity in Las Vegas, NV",
+      "BRRRR strategy candidates in Cleveland, OH",
+      "Properties owned by LLCs in Houston, TX",
+      "Fixer-uppers in areas with rising home values"
     ],
-    atmospheres: [
-      "The autumn air carried promises of change, and [CHARACTER] could feel their carefully constructed walls beginning to crumble.",
-      "Some places hold memories like perfume in fabric—no matter how much time passes, one breath brings everything flooding back.",
-      "The town square looked exactly the same, but [CHARACTER] felt like a completely different person standing in it."
+    descriptions: [
+      "Search for apartment buildings or duplexes suitable for renovation.",
+      "Identify active cash buyers in specific markets.",
+      "Find properties ideal for the Buy, Rehab, Rent, Refinance, Repeat strategy.",
+      "Discover properties held by corporate entities.",
+      "Target homes that require renovation in appreciating neighborhoods."
     ]
   },
-  mystery: {
-    hooks: [
-      "The library book was returned exactly fifty years after it was due, with a note tucked inside that changed everything.",
-      "[CHARACTER] found the key in their grandmother's attic, along with a warning: some doors should never be opened.",
-      "The crime scene was perfect—too perfect. And [CHARACTER] was the only one who seemed to notice."
+  specificFeatures: {
+    examples: [
+      "Homes with pools in 90210 listed for sale",
+      "Properties with 3+ beds, 2+ baths under $300k in Atlanta suburbs",
+      "New construction homes in Raleigh, NC",
+      "Land for commercial development near major highways",
+      "Waterfront properties in South Florida"
     ],
-    atmospheres: [
-      "The old house kept its secrets jealously, revealing them only to those brave enough to ask the right questions.",
-      "Every small town has its mysteries, but this one had a mystery that refused to stay buried.",
-      "The past has a way of surfacing at the most inconvenient times, usually when someone thinks they've forgotten."
-    ]
-  },
-  fantasy: {
-    hooks: [
-      "The magic returned on [CHARACTER]'s eighteenth birthday, bringing with it the enemies they never knew they had.",
-      "The dragon everyone said was dead had been writing letters to [CHARACTER] since childhood.",
-      "When the stars disappeared from the sky, [CHARACTER] was the only one who remembered they had ever been there."
-    ],
-    atmospheres: [
-      "Magic leaves traces like fingerprints—invisible to most, but unmistakable to those who know how to look.",
-      "The forest had been whispering secrets for centuries, but [CHARACTER] was the first person who could understand its language.",
-      "Ancient power runs in bloodlines like a river underground, waiting for the right moment to surface."
-    ]
-  },
-  scifi: {
-    hooks: [
-      "The transmission from Earth stopped three days ago, and [CHARACTER] was the only one still listening.",
-      "When [CHARACTER] woke up from cryosleep, the ship was empty and they were light-years off course.",
-      "The AI had been lying to them for months, and [CHARACTER] had the proof hidden in their neural implant."
-    ],
-    atmospheres: [
-      "Space stretched endlessly in all directions, but [CHARACTER] had never felt more trapped than they did in this moment.",
-      "Technology promised to solve humanity's problems, but [CHARACTER] was beginning to suspect it had created entirely new ones.",
-      "The future wasn't what anyone had expected, least of all the people who had to live in it."
+    descriptions: [
+      "Filter by specific desired property amenities.",
+      "Combine multiple criteria for targeted home searches.",
+      "Find newly built residential properties.",
+      "Search for land suitable for commercial projects.",
+      "Locate properties with direct water access."
     ]
   }
 };
 
-export const COMPELLING_CHAPTER_STRUCTURES = {
-  actionOpener: {
-    template: "[IMMEDIATE ACTION] + [CHARACTER REACTION] + [STAKES REVEAL] + [CLIFFHANGER]",
-    description: "Start with immediate tension that reveals character and escalates stakes"
+export const LEAD_QUALIFICATION_QUESTION_SETS = {
+  motivatedSeller: {
+    questions: [
+      "What is your main reason for selling the property at this time?",
+      "How quickly are you looking to sell?",
+      "What is your desired sale price for the property?",
+      "Are there any major repairs or issues with the property I should be aware of?",
+      "Is there an existing mortgage or any liens on the property?"
+    ],
+    purpose: "To identify seller motivation, timeline, and potential pain points."
   },
-  mysteryOpener: {
-    template: "[INTRIGUING DISCOVERY] + [CHARACTER INVESTIGATION] + [DEEPER MYSTERY] + [PERSONAL STAKES]",
-    description: "Hook with mystery that becomes personally important to the character"
+  cashBuyer: {
+    questions: [
+      "What types of properties are you currently looking to purchase?",
+      "What is your typical budget or price range for acquisitions?",
+      "How quickly can you close on a property once a deal is agreed upon?",
+      "Are you primarily interested in fix-and-flip, buy-and-hold, or other strategies?",
+      "How many properties have you purchased with cash in the last 12 months?"
+    ],
+    purpose: "To assess the seriousness and capacity of a potential cash buyer."
   },
-  emotionalOpener: {
-    template: "[EMOTIONAL MOMENT] + [CHARACTER VULNERABILITY] + [RELATIONSHIP DYNAMICS] + [CHOICE REQUIRED]",
-    description: "Create immediate emotional investment through character vulnerability"
-  },
-  worldBuildingOpener: {
-    template: "[UNIQUE WORLD ELEMENT] + [CHARACTER INTERACTION] + [WORLD RULES] + [CONFLICT INTRODUCTION]",
-    description: "Establish fascinating world through character's natural interaction with it"
+  propertyEnquiry: {
+    questions: [
+      "Can you provide more details about the property's current condition?",
+      "What is the occupancy status of the property (owner-occupied, tenant, vacant)?",
+      "Are there any HOA fees or restrictions associated with the property?",
+      "When was the last major renovation or update (e.g., roof, HVAC)?",
+      "What is the seller's flexibility on price and terms?"
+    ],
+    purpose: "To gather more in-depth information about a specific property."
   }
 };
 
-export const DIALOGUE_ENHANCEMENT_PATTERNS = {
-  subtext: [
-    "Characters say one thing but mean another",
-    "Emotional subtext revealed through word choice and hesitation",
-    "Power dynamics shown through speaking patterns"
-  ],
-  authenticity: [
-    "Each character has distinctive speech patterns",
-    "Dialogue reveals character background and education",
-    "Natural interruptions and overlapping conversations"
-  ],
-  advancement: [
-    "Every conversation moves plot forward",
-    "Dialogue reveals new information naturally",
-    "Character relationships evolve through speech"
-  ]
-};
-
-export const SENSORY_IMMERSION_GUIDES = {
-  visual: [
-    "Use specific colors, shapes, and lighting details",
-    "Show movement and gesture, not just static description",
-    "Include contrasts that create visual tension"
-  ],
-  auditory: [
-    "Layer background sounds with dialogue and action",
-    "Use sound to create mood and atmosphere",
-    "Include the absence of expected sounds for tension"
-  ],
-  tactile: [
-    "Describe texture, temperature, and physical sensation",
-    "Show character comfort/discomfort through physical detail",
-    "Use touch to convey emotion and relationship dynamics"
-  ],
-  emotional: [
-    "Show physical manifestations of emotions",
-    "Use sensory details to trigger emotional memory",
-    "Connect character feelings to environmental elements"
-  ]
-};
-
-export const PACING_TECHNIQUES = {
-  fastPaced: {
-    sentences: "Short, punchy sentences for action and tension",
-    paragraphs: "Brief paragraphs that create rapid movement",
-    structure: "Quick scene changes and immediate consequences"
-  },
-  mediumPaced: {
-    sentences: "Varied sentence length for natural rhythm",
-    paragraphs: "Balanced paragraphs mixing action with reflection",
-    structure: "Steady progression with breathing room for character development"
-  },
-  slowPaced: {
-    sentences: "Longer, more complex sentences for immersion",
-    paragraphs: "Fuller paragraphs that allow for detailed exploration",
-    structure: "Deliberate pacing that builds atmosphere and depth"
-  }
-};
-
-export const EMOTIONAL_IMPACT_STRATEGIES = {
-  immediateConnection: [
-    "Start with universal emotions readers can relate to",
-    "Show character vulnerability early",
-    "Create empathy through character struggle"
-  ],
-  escalatingInvestment: [
-    "Gradually reveal character depth and complexity",
-    "Increase personal stakes as story progresses",
-    "Make character choices increasingly difficult"
-  ],
-  payoffMoments: [
-    "Reward reader investment with emotional catharsis",
-    "Show character growth through action, not exposition",
-    "Create moments of triumph that feel earned"
-  ]
-};
-
-export const PREVIEW_OPTIMIZATION_CHECKLIST = [
-  "✓ Hook readers within first 25 words",
-  "✓ Establish compelling character voice immediately",
-  "✓ Create questions readers must have answered",
-  "✓ Show world through action, not description",
-  "✓ Include at least one unexpected element",
-  "✓ End chapters with irresistible forward momentum",
-  "✓ Balance mystery with clarity",
-  "✓ Create emotional investment in character outcome",
-  "✓ Use sensory details to create immersion",
-  "✓ Ensure every sentence serves story purpose"
+export const PROPERTY_DATA_POINTS_CHECKLIST = [
+  "Owner Name(s) & Contact Info",
+  "Full Property Address (Street, City, State, ZIP)",
+  "Property Type (SFR, Condo, Multi-family, etc.)",
+  "Bedrooms / Bathrooms / Square Footage / Lot Size",
+  "Year Built / Last Renovation Date",
+  "Assessed Value / Estimated Market Value",
+  "Last Sale Date & Price",
+  "Mortgage Information (Loan Amount, Lender, Interest Rate - if available)",
+  "Tax Assessment & History",
+  "Presence of Liens (Tax, HOA, Mechanic, etc.)",
+  "Occupancy Status (Owner-occupied, Tenant, Vacant)",
+  "School District Information",
+  "Comparable Sales (Comps) in the Area",
+  "Neighborhood Demographics & Trends",
+  "Property Condition Notes / Photos (if available)"
 ];
 
-export function getGenreSpecificEnhancements(genre: string) {
-  const enhancements: Record<string, {
+export const FOLLOW_UP_MESSAGE_TEMPLATES = {
+  initialContactSeller: {
+    subject: "Regarding your property at [Property Address]",
+    body: "Hi [Seller Name],\n\nMy name is [Your Name] and I'm interested in your property at [Property Address]. I came across it and wanted to see if you might be open to discussing a potential sale.\n\nWould you have a few minutes to chat this week?\n\nBest regards,\n[Your Name]\n[Your Contact Info]",
+    channel: "Email"
+  },
+  initialContactBuyer: {
+    subject: "Potential investment property: [Property Address]",
+    body: "Hi [Buyer Name],\n\nI found a property at [Property Address] that seems to fit your investment criteria for [Criteria e.g., 'fix-and-flips in Anytown']. It features [Key Feature 1] and [Key Feature 2].\n\nAre you interested in learning more?\n\nThanks,\n[Your Name]\n[Your Contact Info]",
+    channel: "Email"
+  },
+  genericFollowUp: {
+    subject: "Following up on [Property Address / Lead Name]",
+    body: "Hi [Contact Name],\n\nJust wanted to follow up on our previous conversation regarding [Property Address / Lead Name]. Do you have any updates or further questions for me at this time?\n\nLooking forward to hearing from you.\n\nSincerely,\n[Your Name]",
+    channel: "Email/SMS"
+  }
+};
+
+// This function can be updated or removed if not directly applicable.
+// For now, it returns a generic set of techniques for "data analysis"
+// instead of "genre specific enhancements".
+export function getRealEstateAnalysisTechniques(analysisType: string) {
+  const techniques: Record<string, {
     focus: string;
-    techniques: string[];
-    avoid: string[];
+    methods: string[];
+    dataSources: string[];
   }> = {
-    thriller: {
-      focus: "Immediate tension and escalating stakes",
-      techniques: ["Start with action", "Short, punchy sentences", "Constant forward momentum"],
-      avoid: ["Slow exposition", "Long descriptive passages", "Predictable patterns"]
+    marketAnalysis: {
+      focus: "Understanding market trends and property values",
+      methods: ["Comparable sales analysis (comps)", "Absorption rate calculation", "Price trend analysis"],
+      dataSources: ["MLS data", "Public records", "Local market reports"]
     },
-    romance: {
-      focus: "Emotional connection and character chemistry",
-      techniques: ["Strong character voice", "Emotional vulnerability", "Sensory attraction"],
-      avoid: ["Instant love", "Cliched meet-cutes", "Passive protagonists"]
+    leadQualification: {
+      focus: "Identifying motivated sellers or serious buyers",
+      methods: ["Asking probing questions", "Assessing financial capacity", "Understanding timelines and motivation"],
+      dataSources: ["Direct communication", "Public records (liens, probate)", "Property data"]
     },
-    mystery: {
-      focus: "Intriguing questions and clever revelations",
-      techniques: ["Plant clues naturally", "Red herrings", "Character investigation"],
-      avoid: ["Withholding obvious information", "Coincidental solutions", "Passive detection"]
-    },
-    fantasy: {
-      focus: "World-building through character interaction",
-      techniques: ["Magic through action", "Unique world elements", "Character-driven exploration"],
-      avoid: ["Info-dumping", "Generic magic systems", "Passive world tours"]
-    },
-    scifi: {
-      focus: "Technology's impact on human experience",
-      techniques: ["Tech through character need", "Future implications", "Human consequences"],
-      avoid: ["Technical exposition", "Tech-solves-everything", "Ignoring human element"]
+    propertyValuation: {
+      focus: "Estimating the current market value of a property",
+      methods: ["Sales comparison approach", "Income approach (for rentals)", "Cost approach (less common for MSP)"],
+      dataSources: ["Recent sales data", "Rental income data", "Construction cost data"]
     }
   };
-
-  return enhancements[genre.toLowerCase()] || enhancements.thriller;
+  return techniques[analysisType.toLowerCase()] || techniques.marketAnalysis;
 }

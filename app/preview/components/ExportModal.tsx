@@ -84,7 +84,7 @@ export default function ExportModal({ isOpen, onClose, isPremium, previewsUsed, 
             <div className="bg-gradient-to-br from-gray-800/95 to-gray-900/95 backdrop-blur-xl rounded-2xl border border-gray-700/30 shadow-2xl p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  Export Options
+                  Export Report/Data {/* Changed */}
                 </h2>
                 <button
                   onClick={onClose}
@@ -99,13 +99,13 @@ export default function ExportModal({ isOpen, onClose, isPremium, previewsUsed, 
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: 'pdf', label: 'PDF', icon: '📄' },
-                    { id: 'epub', label: 'EPUB', icon: '📱', premium: true },
-                    { id: 'mp3', label: 'MP3', icon: '🎧', premium: true }
+                    { id: 'pdf', label: 'PDF Report', icon: '📄' }, // Changed label
+                    { id: 'csv', label: 'CSV Data', icon: '📊', premium: true }, // Changed: epub to csv, icon
+                    { id: 'audio', label: 'AI Summary', icon: '🎧', premium: true } // Changed: mp3 to audio, icon (optional)
                   ].map((format) => (
                     <button
                       key={format.id}
-                      onClick={() => setSelectedFormat(format.id as 'pdf' | 'epub' | 'mp3')}
+                      onClick={() => setSelectedFormat(format.id as any)} // Allow new format IDs
                       className={`relative p-4 rounded-xl border transition-all duration-200 ${
                         selectedFormat === format.id
                           ? 'bg-gradient-to-br from-blue-600/20 to-blue-700/20 border-blue-500/50'
@@ -130,17 +130,17 @@ export default function ExportModal({ isOpen, onClose, isPremium, previewsUsed, 
                   <div className="p-4 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/30">
                     <h3 className="text-lg font-medium text-white mb-2">Export Details</h3>
                     <p className="text-gray-400 text-sm">
-                      {selectedFormat === 'pdf' && 'Export your ebook as a PDF file, perfect for printing and sharing.'}
-                      {selectedFormat === 'epub' && 'Create an EPUB file for reading on e-readers and mobile devices.'}
-                      {selectedFormat === 'mp3' && 'Convert your ebook into an audio file for listening on the go.'}
+                      {selectedFormat === 'pdf' && 'Export property/lead details as a PDF report, perfect for printing and sharing.'} {/* Changed */}
+                      {selectedFormat === 'csv' && 'Export data in CSV format for spreadsheets or other tools.'} {/* Changed for csv */}
+                      {selectedFormat === 'audio' && 'Generate an AI audio summary of the key data points for this record.'} {/* Changed for audio */}
                     </p>
                   </div>
 
-                  {!isPremium && selectedFormat !== 'pdf' && (
+                  {!isPremium && (selectedFormat === 'csv' || selectedFormat === 'audio') && ( // Adjusted condition for new formats
                     <div className="p-4 rounded-xl bg-gradient-to-br from-blue-600/20 to-blue-700/20 border border-blue-500/30">
                       <h3 className="text-lg font-medium text-white mb-2">Upgrade to Premium</h3>
                       <p className="text-gray-300 text-sm">
-                        Get access to EPUB and MP3 exports, plus many more premium features.
+                        Get access to CSV data exports and AI audio summaries, plus many more premium features. {/* Changed */}
                       </p>
                       <button className="mt-3 w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200">
                         Upgrade Now

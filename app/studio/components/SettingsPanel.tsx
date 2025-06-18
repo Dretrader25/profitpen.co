@@ -80,7 +80,7 @@ export default function SettingsPanel({
       id: 'general',
       title: 'General',
       icon: Settings,
-      description: 'Basic app preferences and defaults'
+      description: 'Basic application preferences and defaults' // Changed
     },
     {
       id: 'appearance',
@@ -90,9 +90,9 @@ export default function SettingsPanel({
     },
     {
       id: 'ai',
-      title: 'AI & Writing',
+      title: 'AI & Data Analysis', // Changed
       icon: Brain,
-      description: 'Configure AI behavior and writing assistance'
+      description: 'Configure AI behavior and data processing' // Changed
     },
     {
       id: 'privacy',
@@ -167,19 +167,19 @@ export default function SettingsPanel({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Default Genre
+            Default Lead Type {/* Changed */}
           </label>
           <select
-            value={settings.defaultGenre}
+            value={settings.defaultGenre} // State key remains, value options change
             onChange={(e) => updateSetting('defaultGenre', e.target.value)}
             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-Fiction</option>
-            <option value="mystery">Mystery</option>
-            <option value="romance">Romance</option>
-            <option value="sci-fi">Science Fiction</option>
-            <option value="fantasy">Fantasy</option>
+            <option value="residential">Residential Property</option> {/* Changed */}
+            <option value="commercial">Commercial Property</option> {/* Changed */}
+            <option value="absentee_owner">Absentee Owner</option> {/* Changed */}
+            <option value="cash_buyer">Cash Buyer</option> {/* Changed */}
+            <option value="pre_foreclosure">Pre-foreclosure</option> {/* Changed */}
+            <option value="vacant_land">Vacant Land</option> {/* Changed */}
           </select>
         </div>
       </div>
@@ -278,10 +278,10 @@ export default function SettingsPanel({
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
         <div className="flex items-center gap-2 mb-2">
           <Crown className="w-5 h-5 text-purple-600" />
-          <span className="font-medium text-purple-900">AI Writing Assistant</span>
+          <span className="font-medium text-purple-900">AI Data Assistant</span> {/* Changed */}
         </div>
         <p className="text-sm text-purple-700">
-          Configure how the AI helps with your writing process
+          Configure how AI assists with data analysis and suggestions {/* Changed */}
         </p>
       </div>
 
@@ -303,18 +303,17 @@ export default function SettingsPanel({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Writing Tone
+            Report/Communication Style {/* Changed */}
           </label>
           <select
-            value={settings.tone}
+            value={settings.tone} // State key remains, options might change if needed
             onChange={(e) => updateSetting('tone', e.target.value)}
             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="casual">Casual</option>
             <option value="neutral">Neutral</option>
             <option value="formal">Formal</option>
-            <option value="creative">Creative</option>
-            <option value="dramatic">Dramatic</option>
+            <option value="concise">Concise</option>
+            <option value="detailed">Detailed</option>
           </select>
         </div>
       </div>
@@ -341,8 +340,8 @@ export default function SettingsPanel({
       <div className="space-y-4">
         <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
           <div>
-            <div className="font-medium text-gray-900">Auto Suggestions</div>
-            <div className="text-sm text-gray-600">Show writing suggestions as you type</div>
+            <div className="font-medium text-gray-900">Data Auto-fill / AI Suggestions</div> {/* Changed */}
+            <div className="text-sm text-gray-600">Enable AI to suggest data or complete fields</div> {/* Changed */}
           </div>
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -561,8 +560,8 @@ export default function SettingsPanel({
       <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Studio Settings</h2>
-          <p className="text-gray-600">Customize your writing environment and preferences</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Application Preferences</h2> {/* Changed */}
+          <p className="text-gray-600">Customize your PropAnalyzed workspace and default settings.</p> {/* Changed */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

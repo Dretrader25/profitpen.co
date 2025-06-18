@@ -130,8 +130,8 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
       <div className="p-6 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Plot Structure</h2>
-            <p className="text-sm text-gray-600">{plotPoints.length} plot points • Story progression</p>
+            <h2 className="text-lg font-semibold text-gray-900">Deal Workflow</h2> {/* Changed */}
+            <p className="text-sm text-gray-600">{plotPoints.length} steps • Deal progression</p> {/* Changed */}
           </div>
           
           <div className="flex items-center gap-3">
@@ -162,17 +162,19 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
               onClick={() => setShowCreateModal(true)}
               className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
             >
-              + Add Plot Point
+              + Add Workflow Step {/* Changed */}
             </button>
           </div>
         </div>
 
-        {/* Plot Stats */}
+        {/* Workflow Stats */}
         <div className="grid grid-cols-4 gap-4 text-center">
-          {['setup', 'conflict', 'climax', 'resolution'].map(type => (
-            <div key={type} className={`p-3 rounded-lg border ${getTypeColor(type)}`}>
+          {/* Updated types: 'Lead In', 'First Contact', 'Negotiation', 'Closing' */}
+          {['Lead In', 'First Contact', 'Negotiation', 'Closing'].map(type => (
+            <div key={type} className={`p-3 rounded-lg border ${getTypeColor(type.toLowerCase().replace(' ', ''))}`}> {/* Ensure getTypeColor handles new types or is made generic */}
               <div className="text-lg font-semibold">
-                {plotPoints.filter(pp => pp.type === type).length}
+                {/* Filtering logic might need adjustment if 'type' values in data change */}
+                {plotPoints.filter(pp => pp.type.toLowerCase().replace(' ', '') === type.toLowerCase().replace(' ', '')).length}
               </div>
               <div className="text-xs font-medium capitalize">{type}</div>
             </div>
@@ -218,15 +220,15 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
                             <div>
                               <h3 className="font-medium text-gray-900">{plotPoint.title}</h3>
                               <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(plotPoint.type)}`}>
-                                  {plotPoint.type}
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(plotPoint.type.toLowerCase().replace(' ', ''))}`}> {/* Ensure getTypeColor handles new types */}
+                                  {plotPoint.type} {/* e.g. "Lead In", "First Contact" */}
                                 </span>
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plotPoint.status)}`}>
-                                  {plotPoint.status}
+                                  {plotPoint.status} {/* e.g. "To Do", "In Progress" */}
                                 </span>
-                                {plotPoint.chapter && (
+                                {plotPoint.chapter && ( // This field might be "Associated Property/Lead"
                                   <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
-                                    Ch. {plotPoint.chapter}
+                                    Property: {plotPoint.chapter} {/* Changed "Ch." to "Property:" or "Lead:" */}
                                   </span>
                                 )}
                               </div>
@@ -265,7 +267,7 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
                         
                         {plotPoint.characters.length > 0 && (
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">Characters:</span>
+                            <span className="text-xs text-gray-500">Assigned To/Contacts:</span> {/* Changed */}
                             <div className="flex flex-wrap gap-1">
                               {plotPoint.characters.map((character, idx) => (
                                 <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">
@@ -285,15 +287,16 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
         ) : (
           <div className="h-full overflow-y-auto p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {['setup', 'conflict', 'climax', 'resolution'].map(type => (
+              {/* Updated types: 'Lead In', 'First Contact', 'Negotiation', 'Closing' */}
+              {['Lead In', 'First Contact', 'Negotiation', 'Closing'].map(type => (
                 <div key={type} className="space-y-4">
-                  <h3 className={`font-semibold text-sm uppercase tracking-wide p-3 rounded-lg ${getTypeColor(type)}`}>
-                    {getTypeIcon(type)} {type}
+                  <h3 className={`font-semibold text-sm uppercase tracking-wide p-3 rounded-lg ${getTypeColor(type.toLowerCase().replace(' ', ''))}`}> {/* Ensure getTypeColor handles new types */}
+                    {getTypeIcon(type.toLowerCase().replace(' ', ''))} {type} {/* Ensure getTypeIcon handles new types */}
                   </h3>
                   
                   <div className="space-y-3">
                     {plotPoints
-                      .filter(pp => pp.type === type)
+                      .filter(pp => pp.type.toLowerCase().replace(' ', '') === type.toLowerCase().replace(' ', '')) // Adjust filter logic if 'type' values in data change
                       .sort((a, b) => a.order - b.order)
                       .map((plotPoint, index) => (
                         <motion.div
@@ -309,7 +312,7 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
                           <div className="flex items-start justify-between mb-2">
                             <h4 className="font-medium text-gray-900 text-sm">{plotPoint.title}</h4>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plotPoint.status)}`}>
-                              {plotPoint.status}
+                              {plotPoint.status} {/* e.g. "To Do", "In Progress" */}
                             </span>
                           </div>
                           
@@ -318,8 +321,8 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
                           </p>
                           
                           <div className="flex items-center justify-between">
-                            {plotPoint.chapter && (
-                              <span className="text-xs text-gray-500">Ch. {plotPoint.chapter}</span>
+                            {plotPoint.chapter && ( // This field might be "Associated Property/Lead"
+                              <span className="text-xs text-gray-500">Property: {plotPoint.chapter}</span> // Changed "Ch."
                             )}
                             <div className="flex items-center gap-1">
                               <button
@@ -362,70 +365,74 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
             >
               <div className="p-6 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {isEditing ? 'Edit Plot Point' : 'Create New Plot Point'}
+                  {isEditing ? 'Edit Workflow Step' : 'Create New Workflow Step'} {/* Changed */}
                 </h3>
               </div>
               
               <div className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Step Name / Task Title</label> {/* Changed */}
                   <input
                     type="text"
                     value={editingPlotPoint?.title || ''}
                     onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, title: e.target.value } : null)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Plot point title"
+                    placeholder="Enter step or task name" // Changed
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Stage Type</label> {/* Changed */}
                     <select
-                      value={editingPlotPoint?.type || 'setup'}
+                      value={editingPlotPoint?.type || 'setup'} // Default might change
                       onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, type: e.target.value as any } : null)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="setup">Setup</option>
-                      <option value="conflict">Conflict</option>
-                      <option value="climax">Climax</option>
-                      <option value="resolution">Resolution</option>
+                      {/* Updated options for real estate deal workflow */}
+                      <option value="lead in">Lead In</option>
+                      <option value="first contact">First Contact</option>
+                      <option value="negotiation">Negotiation</option>
+                      <option value="closing">Closing</option>
+                      <option value="post-close">Post-Close</option>
                     </select>
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select
-                      value={editingPlotPoint?.status || 'planned'}
+                      value={editingPlotPoint?.status || 'planned'} // Default might change
                       onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, status: e.target.value as any } : null)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="planned">Planned</option>
-                      <option value="drafted">Drafted</option>
-                      <option value="complete">Complete</option>
+                      {/* Updated options for task/step status */}
+                      <option value="to do">To Do</option>
+                      <option value="in progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                      <option value="deferred">Deferred</option>
                     </select>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Chapter</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Associated Property/Lead</label> {/* Changed */}
                     <input
-                      type="number"
-                      value={editingPlotPoint?.chapter || ''}
-                      onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, chapter: parseInt(e.target.value) || undefined } : null)}
+                      type="text" // Could be a select or search input later
+                      value={editingPlotPoint?.chapter || ''} // Re-using 'chapter' field, which is a number. May need to change to string.
+                      onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, chapter: parseInt(e.target.value) || undefined } : null)} // Assuming it's an ID for now
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Optional"
+                      placeholder="Property ID or Address"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description / Notes</label> {/* Changed */}
                   <textarea
                     value={editingPlotPoint?.description || ''}
                     onChange={(e) => setEditingPlotPoint(prev => prev ? { ...prev, description: e.target.value } : null)}
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Describe what happens in this plot point..."
+                    placeholder="Describe the step or task details..." // Changed
                   />
                 </div>
               </div>
@@ -445,7 +452,7 @@ export default function PlotOutline({ currentStory, onTabChange }: PlotOutlinePr
                   onClick={handleSavePlotPoint}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  {isEditing ? 'Save Changes' : 'Create Plot Point'}
+                  {isEditing ? 'Save Changes' : 'Create Step'} {/* Changed */}
                 </button>
               </div>
             </motion.div>

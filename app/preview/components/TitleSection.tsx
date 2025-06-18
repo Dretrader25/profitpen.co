@@ -44,7 +44,7 @@ export default function TitleSection({
   const { currentStory } = useStoryStore();
 
   const handleTitleEdit = () => {
-    setTempTitle(currentStory?.title || 'Your Ebook Title');
+    setTempTitle(currentStory?.title || 'Property Address / Lead Name'); // Changed
     setIsEditingTitle(true);
   };
 
@@ -59,14 +59,14 @@ export default function TitleSection({
   };
 
   const getSmartInsight = () => {
-    const bookStats = getBookQualityStats();
-    if (!bookStats) return null;
+    const dataStats = getBookQualityStats(); // Renamed bookStats to dataStats for clarity
+    if (!dataStats) return null;
     
-    const insights = [
-      bookStats.averageScore >= 85 ? "🚀 Your book quality is publishing-ready!" : null,
-      bookStats.totalPages >= 50 ? "📚 Great length for your genre!" : null,
-      bookStats.completionPercentage >= 90 ? "✨ Almost ready for export!" : null,
-      bookStats.excellentPages > bookStats.totalPages * 0.6 ? "🏆 Majority of pages are excellent quality!" : null,
+    const insights = [ // Updated insights for real estate context
+      dataStats.averageScore >= 85 ? "🚀 High data completeness! Ready for detailed analysis." : null,
+      dataStats.totalPages >= 10 ? "📄 Comprehensive data available for this record." : null, // Assuming totalPages maps to data sections
+      dataStats.completionPercentage >= 90 ? "✨ Data nearly complete for this lead/property!" : null,
+      dataStats.excellentPages > dataStats.totalPages * 0.6 ? "🏆 Majority of data fields are high quality!" : null, // Assuming excellentPages maps to high quality data fields
     ].filter(Boolean);
     
     return insights[Math.floor(Math.random() * insights.length)];
@@ -92,7 +92,7 @@ export default function TitleSection({
                 transition={{ duration: 0.1 }}
               />
             </div>
-            <span className="text-gray-600 text-xs">Generating...</span>
+            <span className="text-gray-600 text-xs">Fetching Property Data...</span> {/* Changed */}
           </div>
         </div>
       ) : (
@@ -124,18 +124,18 @@ export default function TitleSection({
                 <div className="flex items-center gap-2 group">
                   <h2 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent tracking-tight cursor-pointer hover:from-blue-600 hover:to-blue-500 transition-all truncate"
                       onClick={handleTitleEdit}>
-                    {currentStory?.title || 'Your Ebook Title'}
+                    {currentStory?.title || 'Property Address / Lead Name'} {/* Changed */}
                   </h2>
                   <button 
                     onClick={handleTitleEdit}
                     className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all text-xs"
-                    title="Edit title"
+                    title="Edit Address/Name" // Changed
                   >
                     ✏️
                   </button>
                   <button 
                     className="text-yellow-600 hover:text-yellow-500 transition-all text-xs"
-                    title="AI title suggestions"
+                    title="AI Suggestions" // Changed
                   >
                     ✨
                   </button>
@@ -145,26 +145,26 @@ export default function TitleSection({
 
             {/* Right side: Stats and insights */}
             <div className="flex items-center gap-3">
-              {/* Compact Book Quality Stats */}
+              {/* Compact Data Quality Stats */}
               {(() => {
-                const bookStats = getBookQualityStats();
-                return bookStats && (
+                const dataStats = getBookQualityStats(); // Renamed
+                return dataStats && (
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-200/30 rounded text-xs">
-                      <span className="text-gray-500">📖</span>
-                      <span className="text-gray-700 font-medium">{bookStats.totalPages}p</span>
+                      <span className="text-gray-500">📄</span> {/* Icon for sections/records */}
+                      <span className="text-gray-700 font-medium">{dataStats.totalPages} Sections</span> {/* Changed "p" to "Sections" */}
                     </div>
                     <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-200/30 rounded text-xs">
-                      <span className="text-gray-500">📝</span>
-                      <span className="text-gray-700 font-medium">{Math.round(bookStats.totalWords/1000)}k</span>
+                      <span className="text-gray-500">💾</span> {/* Icon for data points */}
+                      <span className="text-gray-700 font-medium">{Math.round(dataStats.totalWords/1000)}k Points</span> {/* Changed "k" to "k Points" */}
                     </div>
                     <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-200/30 rounded text-xs">
                       <div className={`w-2 h-2 rounded-full ${
-                        bookStats.averageScore >= 90 ? 'bg-green-500' :
-                        bookStats.averageScore >= 80 ? 'bg-blue-500' :
-                        bookStats.averageScore >= 70 ? 'bg-yellow-500' : 'bg-gray-500'
+                        dataStats.averageScore >= 90 ? 'bg-green-500' :
+                        dataStats.averageScore >= 80 ? 'bg-blue-500' :
+                        dataStats.averageScore >= 70 ? 'bg-yellow-500' : 'bg-gray-500'
                       }`}></div>
-                      <span className="text-gray-700 font-medium">{bookStats.averageScore}</span>
+                      <span className="text-gray-700 font-medium">{dataStats.averageScore} Score</span> {/* Added "Score" for context */}
                     </div>
                   </div>
                 );
@@ -191,7 +191,7 @@ export default function TitleSection({
               >
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-blue-600">
-                    {getSmartInsight() || "Keep writing to unlock more insights!"}
+                    {getSmartInsight() || "Analyze more data to unlock insights!"} {/* Changed */}
                   </span>
                 </div>
               </motion.div>

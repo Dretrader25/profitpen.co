@@ -145,35 +145,35 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
         <div className="p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
-              Characters ({characters.length})
+              Contacts ({characters.length}) {/* Changed */}
             </h2>
             <button
               onClick={() => setShowCreateModal(true)}
               className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
             >
-              + New Character
+              + New Contact {/* Changed */}
             </button>
           </div>
           
-          {/* Character Stats */}
+          {/* Contact Stats by Role */}
           <div className="grid grid-cols-3 gap-2 text-xs">
             <div className="text-center p-2 bg-purple-50 rounded">
               <div className="font-semibold text-purple-600">
-                {characters.filter(c => c.status === 'main').length}
+                {characters.filter(c => c.status === 'main').length} {/* Status 'main' could map to 'Owner' */}
               </div>
-              <div className="text-purple-600">Main</div>
+              <div className="text-purple-600">Owners</div> {/* Changed */}
             </div>
             <div className="text-center p-2 bg-blue-50 rounded">
               <div className="font-semibold text-blue-600">
-                {characters.filter(c => c.status === 'supporting').length}
+                {characters.filter(c => c.status === 'supporting').length} {/* Status 'supporting' could map to 'Buyer' */}
               </div>
-              <div className="text-blue-600">Supporting</div>
+              <div className="text-blue-600">Buyers</div> {/* Changed */}
             </div>
             <div className="text-center p-2 bg-gray-50 rounded">
               <div className="font-semibold text-gray-600">
-                {characters.filter(c => c.status === 'minor').length}
+                {characters.filter(c => c.status === 'minor').length} {/* Status 'minor' could map to 'Agent' or 'Tenant' */}
               </div>
-              <div className="text-gray-600">Minor</div>
+              <div className="text-gray-600">Agents</div> {/* Changed example */}
             </div>
           </div>
         </div>
@@ -199,23 +199,23 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                     <span className="text-lg">{getStatusIcon(character.status)}</span>
                     <div>
                       <h3 className="font-medium text-gray-900 text-sm">
-                        {character.name}
+                        {character.name} {/* Contact Name */}
                       </h3>
-                      <p className="text-xs text-gray-600">{character.role}</p>
+                      <p className="text-xs text-gray-600">{character.role}</p> {/* Role (e.g., Owner, Buyer, Agent) */}
                     </div>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(character.status)}`}>
-                    {character.status}
+                    {character.status} {/* Status like Owner, Buyer, Agent */}
                   </span>
                 </div>
                 
                 <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                  {character.personality}
+                  {character.personality} {/* This could map to "Notes" or "Key Details" */}
                 </p>
                 
                 <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>{character.relationships.length} relationships</span>
-                  <span>{character.arcs.length} arcs</span>
+                  <span>{character.relationships.length} Associated Properties</span> {/* Changed */}
+                  <span>{character.arcs.length} Interactions</span> {/* Changed */}
                 </div>
               </motion.div>
             ))}
@@ -237,15 +237,15 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                   <div className="p-6 border-b border-gray-200 bg-white">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl">{getStatusIcon(character.status)}</span>
+                        <span className="text-3xl">{getStatusIcon(character.status)}</span> {/* Icon might need update based on new roles */}
                         <div>
                           <h2 className="text-xl font-semibold text-gray-900">
-                            {character.name}
+                            {character.name} {/* Contact Name */}
                           </h2>
-                          <p className="text-sm text-gray-600">{character.role}</p>
+                          <p className="text-sm text-gray-600">{character.role}</p> {/* Role (e.g., Owner, Buyer, Agent) */}
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(character.status)}`}>
-                          {character.status}
+                          {character.status} {/* Status like Owner, Buyer, Agent */}
                         </span>
                       </div>
                       
@@ -254,14 +254,14 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                           onClick={() => handleEditCharacter(character)}
                           className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                          Edit
+                          Edit Contact {/* Changed */}
                         </button>
                         
                         <button
                           onClick={() => handleDeleteCharacter(character.id)}
                           className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
                         >
-                          Delete
+                          Delete Contact {/* Changed */}
                         </button>
                       </div>
                     </div>
@@ -272,30 +272,30 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {/* Basic Info */}
                       <div className="space-y-6">
+                        {/* Map Personality, Motivation, Appearance, Backstory to more generic "Notes" or specific contact fields */}
                         <div className="bg-white border border-gray-200 rounded-lg p-4">
                           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>🎭</span> Personality
+                            <span>📝</span> Notes / Key Details
                           </h3>
                           <p className="text-gray-700 text-sm leading-relaxed">
-                            {character.personality || 'No personality defined yet.'}
+                            {character.personality || 'No details provided.'} {/* Combining personality as an example */}
                           </p>
                         </div>
-
-                        <div className="bg-white border border-gray-200 rounded-lg p-4">
+                         <div className="bg-white border border-gray-200 rounded-lg p-4">
                           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>🎯</span> Motivation
+                            <span>📞</span> Contact Information
                           </h3>
                           <p className="text-gray-700 text-sm leading-relaxed">
-                            {character.motivation || 'No motivation defined yet.'}
+                            Email: {character.motivation || 'N/A'} {/* Motivation mapped to Email example */} <br/>
+                            Phone: {character.appearance || 'N/A'} {/* Appearance mapped to Phone example */}
                           </p>
                         </div>
-
-                        <div className="bg-white border border-gray-200 rounded-lg p-4">
+                         <div className="bg-white border border-gray-200 rounded-lg p-4">
                           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>👁️</span> Appearance
+                            <span>🏠</span> Mailing Address
                           </h3>
                           <p className="text-gray-700 text-sm leading-relaxed">
-                            {character.appearance || 'No appearance description yet.'}
+                            {character.backstory || 'No address provided.'} {/* Backstory mapped to Address example */}
                           </p>
                         </div>
                       </div>
@@ -304,16 +304,7 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                       <div className="space-y-6">
                         <div className="bg-white border border-gray-200 rounded-lg p-4">
                           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>📖</span> Backstory
-                          </h3>
-                          <p className="text-gray-700 text-sm leading-relaxed">
-                            {character.backstory || 'No backstory defined yet.'}
-                          </p>
-                        </div>
-
-                        <div className="bg-white border border-gray-200 rounded-lg p-4">
-                          <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>🤝</span> Relationships
+                            <span>🏘️</span> Associated Properties
                           </h3>
                           <div className="space-y-2">
                             {character.relationships.length > 0 ? (
@@ -322,18 +313,18 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                                   key={index}
                                   className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mr-2 mb-2"
                                 >
-                                  {rel}
+                                  {rel} {/* This would be property IDs or addresses */}
                                 </span>
                               ))
                             ) : (
-                              <p className="text-gray-500 text-sm">No relationships defined yet.</p>
+                              <p className="text-gray-500 text-sm">No associated properties.</p>
                             )}
                           </div>
                         </div>
 
                         <div className="bg-white border border-gray-200 rounded-lg p-4">
                           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <span>📈</span> Character Arcs
+                            <span>🔄</span> Interaction History
                           </h3>
                           <div className="space-y-2">
                             {character.arcs.length > 0 ? (
@@ -342,11 +333,11 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                                   key={index}
                                   className="inline-block px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium mr-2 mb-2"
                                 >
-                                  {arc}
+                                  {arc} {/* This would be interaction summaries/dates */}
                                 </span>
                               ))
                             ) : (
-                              <p className="text-gray-500 text-sm">No character arcs defined yet.</p>
+                              <p className="text-gray-500 text-sm">No interaction history recorded.</p>
                             )}
                           </div>
                         </div>
@@ -361,13 +352,13 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <div className="text-6xl mb-4">👥</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Character</h3>
-              <p className="text-gray-600 mb-4">Choose a character from the list to view and edit their details</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Contact</h3> {/* Changed */}
+              <p className="text-gray-600 mb-4">Choose a contact from the list to view and edit their details</p> {/* Changed */}
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
-                Create New Character
+                Create New Contact {/* Changed */}
               </button>
             </div>
           </div>
@@ -391,7 +382,7 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
             >
               <div className="p-6 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Edit Character: {editingCharacter.name}
+                  Edit Contact: {editingCharacter.name} {/* Changed */}
                 </h3>
               </div>
               
@@ -425,39 +416,45 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                     onChange={(e) => setEditingCharacter(prev => prev ? { ...prev, status: e.target.value as any } : null)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   >
-                    <option value="main">Main Character</option>
-                    <option value="supporting">Supporting Character</option>
-                    <option value="minor">Minor Character</option>
+                    <option value="main">Owner</option> {/* Changed */}
+                    <option value="supporting">Buyer</option> {/* Changed */}
+                    <option value="minor">Agent</option> {/* Changed */}
+                    <option value="tenant">Tenant</option> {/* Added Example */}
                   </select>
                 </div>
-
+                {/* The following fields (Personality, Motivation, Backstory) will be re-purposed or removed.
+                    For now, changing labels to generic "Notes" or specific contact fields.
+                */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Personality</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes / Key Details</label>
                   <textarea
-                    value={editingCharacter.personality}
+                    value={editingCharacter.personality} // Re-using 'personality' state field for 'Notes'
                     onChange={(e) => setEditingCharacter(prev => prev ? { ...prev, personality: e.target.value } : null)}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="E.g., Interested in multi-family, budget $500k, pre-approved."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Motivation</label>
-                  <textarea
-                    value={editingCharacter.motivation}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={editingCharacter.motivation} // Re-using 'motivation' state field for 'Phone'
                     onChange={(e) => setEditingCharacter(prev => prev ? { ...prev, motivation: e.target.value } : null)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="e.g., (555) 123-4567"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mailing Address</label>
+                  <textarea
+                    value={editingCharacter.backstory} // Re-using 'backstory' state field for 'Mailing Address'
+                    onChange={(e) => setEditingCharacter(prev => prev ? { ...prev, backstory: e.target.value } : null)}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Backstory</label>
-                  <textarea
-                    value={editingCharacter.backstory}
-                    onChange={(e) => setEditingCharacter(prev => prev ? { ...prev, backstory: e.target.value } : null)}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="e.g., 123 Property Ln, Anytown, USA 12345"
                   />
                 </div>
               </div>
@@ -500,7 +497,7 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
               className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Create New Character</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Create New Contact</h3> {/* Changed */}
               </div>
               
               <div className="p-6 space-y-4">
@@ -512,7 +509,7 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                       value={newCharacter.name || ''}
                       onChange={(e) => setNewCharacter(prev => ({ ...prev, name: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Character name"
+                      placeholder="Contact name" // Changed
                     />
                   </div>
                   
@@ -523,32 +520,33 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                       value={newCharacter.role || ''}
                       onChange={(e) => setNewCharacter(prev => ({ ...prev, role: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="e.g., Protagonist, Mentor, Antagonist"
+                      placeholder="e.g., Owner, Buyer, Agent" // Changed
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status/Category</label> {/* Changed */}
                   <select
-                    value={newCharacter.status || 'supporting'}
+                    value={newCharacter.status || 'supporting'} // 'supporting' could map to 'Buyer'
                     onChange={(e) => setNewCharacter(prev => ({ ...prev, status: e.target.value as any }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   >
-                    <option value="main">Main Character</option>
-                    <option value="supporting">Supporting Character</option>
-                    <option value="minor">Minor Character</option>
+                    <option value="main">Owner</option> {/* Changed */}
+                    <option value="supporting">Buyer</option> {/* Changed */}
+                    <option value="minor">Agent</option> {/* Changed */}
+                    <option value="tenant">Tenant</option> {/* Added Example */}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Personality</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label> {/* Changed */}
                   <textarea
-                    value={newCharacter.personality || ''}
+                    value={newCharacter.personality || ''} // Re-using 'personality' state field
                     onChange={(e) => setNewCharacter(prev => ({ ...prev, personality: e.target.value }))}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Describe the character's personality traits..."
+                    placeholder="Enter any relevant notes about this contact..." // Changed
                   />
                 </div>
               </div>
@@ -578,7 +576,7 @@ export default function CharacterManager({ currentStory, onTabChange }: Characte
                   disabled={!newCharacter.name || !newCharacter.role}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Create Character
+                  Create Contact {/* Changed */}
                 </button>
               </div>
             </motion.div>

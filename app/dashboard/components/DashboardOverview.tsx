@@ -23,36 +23,36 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
     return new Intl.NumberFormat().format(num);
   };
 
-  const progressPercentage = (stats.totalWords / stats.weeklyGoal) * 100;
+  const progressPercentage = (stats.totalWords / stats.weeklyGoal) * 100; // This will need to be re-evaluated based on new stats names
 
   const statCards = [
     {
-      title: 'Total Words',
-      value: formatNumber(stats.totalWords),
-      icon: '✍️',
+      title: 'Leads Generated', // Changed
+      value: formatNumber(stats.totalWords), // Value needs to map to new stats, e.g., stats.leadsFound
+      icon: '📈', // Changed icon
       color: 'blue',
-      change: '+12%',
+      change: '+12%', // Change metrics might also need update
       changeType: 'positive'
     },
     {
-      title: 'Pages Written',
-      value: stats.totalPages.toString(),
-      icon: '📄',
+      title: 'Properties Analyzed', // Changed
+      value: stats.totalPages.toString(), // Value needs to map to new stats, e.g., stats.propertiesAnalyzed
+      icon: '🏘️', // Changed icon
       color: 'green',
       change: '+3',
       changeType: 'positive'
     },
     {
-      title: 'Quality Score',
-      value: `${stats.qualityScore.toFixed(1)}/10`,
+      title: 'Avg. Lead Score', // Changed
+      value: `${stats.qualityScore.toFixed(1)}/10`, // Value needs to map to new stats, e.g., stats.avgLeadScore
       icon: '⭐',
       color: 'yellow',
       change: '+0.5',
       changeType: 'positive'
     },
     {
-      title: 'Writing Streak',
-      value: `${stats.streakDays} days`,
+      title: 'Search Streak', // Changed
+      value: `${stats.streakDays} days`, // Value needs to map to new stats, e.g., stats.searchStreakDays
       icon: '🔥',
       color: 'red',
       change: '+1',
@@ -62,51 +62,51 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
 
   const quickActions = [
     {
-      title: 'Continue Writing',
+      title: 'Last Viewed Property', // Changed
       description: 'Pick up where you left off',
-      icon: '✏️',
+      icon: '🏠', // Changed icon
       color: 'blue',
-      action: () => router.push('/studio')
+      action: () => router.push('/studio') // Action might change
     },
     {
-      title: 'Review Chapters',
-      description: 'Edit and refine your content',
-      icon: '📖',
+      title: 'Manage Leads', // Changed
+      description: 'View and organize your leads', // Changed
+      icon: '💼', // Changed icon
       color: 'green',
-      action: () => router.push('/studio?tab=chapters')
+      action: () => router.push('/studio?tab=chapters') // Action might change (tab=leads)
     },
     {
-      title: 'Character Development',
-      description: 'Build compelling characters',
+      title: 'Manage Contacts', // Changed
+      description: 'Access owner and contact details', // Changed
       icon: '👥',
       color: 'purple',
-      action: () => router.push('/studio?tab=characters')
+      action: () => router.push('/studio?tab=characters') // Action might change (tab=contacts)
     },
     {
-      title: 'Preview Book',
-      description: 'See how your book looks',
-      icon: '👁️',
+      title: 'View Sample Report', // Changed
+      description: 'See an example property report', // Changed
+      icon: '📄', // Changed icon
       color: 'indigo',
-      action: () => router.push('/preview')
+      action: () => router.push('/preview') // Action might change
     }
   ];
 
   const recentActivity = [
     {
-      action: 'Added new chapter',
-      chapter: 'Chapter 12: The Revelation',
+      action: 'New Lead Found', // Changed
+      chapter: '123 Main St, Anytown - High Equity', // Changed example
       time: '2 hours ago',
-      icon: '📝'
+      icon: '➕' // Changed icon
     },
     {
-      action: 'Character updated',
-      chapter: 'Sarah Mitchell - Main Protagonist',
+      action: 'Contact Updated', // Changed
+      chapter: 'John Doe - Owner of 456 Oak Ave', // Changed example
       time: '1 day ago',
       icon: '👤'
     },
     {
-      action: 'Plot outline revised',
-      chapter: 'Act II Development',
+      action: 'Deal Workflow Updated', // Changed
+      chapter: '789 Pine Ln - Added to "Follow Up"', // Changed example
       time: '2 days ago',
       icon: '🗺️'
     }
@@ -122,10 +122,10 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
         className="text-center"
       >
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Welcome back to your writing journey! 
+          Welcome back to PropAnalyzed!
         </h2>
         <p className="text-gray-600">
-          {currentStory?.title ? `Continue working on "${currentStory.title}"` : 'Ready to create your next masterpiece?'}
+          {currentStory?.title ? `Reviewing "${currentStory.title || 'your latest search/property'}"` : 'Ready to find your next deal?'}
         </p>
       </motion.div>
 
@@ -169,9 +169,9 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Weekly Writing Goal</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Weekly Lead Goal</h3>
             <p className="text-sm text-gray-600">
-              {formatNumber(stats.totalWords)} of {formatNumber(stats.weeklyGoal)} words
+              {formatNumber(stats.totalWords)} of {formatNumber(stats.weeklyGoal)} leads {/* Text changed, value needs re-map */}
             </p>
           </div>
           <div className="text-2xl">🎯</div>
@@ -205,7 +205,7 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <h3 className="text-lg font-semibold text-gray-900">Recent Projects</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Recent Properties</h3>
           </div>
 
           {/* Right Controls */}
@@ -213,8 +213,8 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
             {/* Filter */}
             <select className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 hover:border-gray-300 transition-colors">
               <option>All Items</option>
-              <option>Chapters</option>
-              <option>Characters</option>
+              <option>Properties</option> {/* Changed */}
+              <option>Contacts</option> {/* Changed */}
               <option>Notes</option>
             </select>
 
@@ -241,41 +241,41 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Property Image" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Active</span>
+              <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Active Lead</span> {/* Changed */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Property Image" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Draft</span>
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">New Property</span> {/* Changed */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Lead Snapshot" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">Review</span>
+              <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">Needs Review</span> {/* Changed */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Property Image" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">Planning</span>
+              <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">High Interest</span> {/* Changed example */}
             </div>
           </div>
 
@@ -283,37 +283,37 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Lead Snapshot" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">Complete</span>
+              <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">Offer Made</span> {/* Changed example */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Property Image" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-medium rounded-full">On Hold</span>
+              <span className="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-medium rounded-full">Low Interest</span> {/* Changed example */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Lead Snapshot" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Published</span>
+              <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Closed Deal</span> {/* Changed example */}
             </div>
           </div>
           <div className="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all cursor-pointer group relative">
             <img 
               src="https://img.freepik.com/free-vector/minimalist-book-cover-template_23-2148899519.jpg?semt=ais_items_boosted&w=740"
-              alt="Book Cover"
+              alt="Property Image" // Changed
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-2 left-2">
@@ -404,13 +404,13 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
             </div>
             <div className="flex-1">
               <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                {currentStory.title || 'Untitled Story'}
+                {currentStory.title || 'Untitled Project'} {/* Changed */}
               </h4>
               <p className="text-gray-600 mb-3">
-                {currentStory.description || 'No description available'}
+                {currentStory.description || 'No description available.'} {/* Changed */}
               </p>
               <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>Genre: {currentStory.genre || 'Not specified'}</span>
+                <span>Lead Type: {currentStory.genre || 'Not specified'}</span> {/* Changed */}
                 <span>•</span>
                 <span>Last updated: {stats.lastUpdated.toLocaleDateString()}</span>
               </div>
@@ -419,7 +419,7 @@ export default function DashboardOverview({ currentStory, stats }: DashboardOver
               onClick={() => router.push('/studio')}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Continue Writing
+              View Details {/* Changed */}
             </button>
           </div>
         </motion.div>

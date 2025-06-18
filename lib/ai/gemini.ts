@@ -102,50 +102,50 @@ export async function generateChapter(
 ): Promise<string> {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-  const prompt = `You are an elite chapter writer crafting a concise, impactful chapter.
+  const prompt = `You are an expert data analyst generating a detailed section for a property report, adhering to a word count of 150-200 words for this section.
 
-    CHAPTER ASSIGNMENT: Write Chapter ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ''} in exactly 150-200 words.
+    DATA SECTION ASSIGNMENT: Generate Section ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ' (e.g., Ownership History, Tax Assessment Details, Comparable Sales Analysis)'} in exactly 150-200 words.
 
-    STORY FOUNDATION: ${storyContext}
+    PROPERTY CONTEXT: ${storyContext} {/* Assuming storyContext will now be propertyAddressOrID or similar */}
     
-    PREVIOUS CHAPTER CONTEXT:
+    PREVIOUS DATA SECTIONS (if applicable, for context):
     ${previousChapters.slice(-2).join('\n\n---\n\n')}
     
     QUALITY REQUIREMENTS:
-    ✓ Hook readers with the first sentence
-    ✓ Build tension and character depth
-    ✓ Advance the plot meaningfully
-    ✓ Create emotional investment
-    ✓ End with a compelling hook for the next chapter
+    ✓ Provide clear and accurate data.
+    ✓ Ensure information is concise and directly relevant to the section topic.
+    ✓ Offer actionable insights or key takeaways where appropriate.
+    ✓ Maintain a professional and objective tone.
+    ✓ Structure the information logically.
 
     STRUCTURE (150-200 words total):
-    1. Opening Hook (40-50 words): Set the scene and tension
-    2. Core Development (80-100 words): Key plot/character development
-    3. Resolution/Hook (30-50 words): Satisfying conclusion with next-chapter tease
+    1. Data Summary (40-50 words): Briefly introduce the key data points in this section.
+    2. Detailed Breakdown (80-100 words): Elaborate on the data, providing specific figures or details.
+    3. Key Takeaways/Implications (30-50 words): Summarize the significance of the data or suggest potential implications.
 
-    Return the chapter in this HTML structure:
+    Return the section in this HTML structure:
 
-    <div class="page">
+    <div class="page"> {/* "page" class can remain for layout consistency if desired */}
       <div class="page-header">
-        <span class="page-number">[page_number]</span>
-        <span class="chapter-title">Chapter [number]: [title]</span>
+        <span class="page-number">[page_number]</span> {/* This might represent a section number or be omitted */}
+        <span class="section-title">Section ${chapterNumber}: ${chapterTitle || 'Details'}</span> {/* Changed class and text */}
       </div>
       <div class="page-content">
-        <h2 class="chapter-heading">Chapter [number]: [title]</h2>
-        <div class="chapter-opening">
-          <p class="chapter-text">[opening hook]</p>
+        <h2 class="section-heading">Section ${chapterNumber}: ${chapterTitle || 'Details'}</h2> {/* Changed class and text */}
+        <div class="data-summary"> {/* Changed class */}
+          <p class="data-text">[data summary]</p> {/* Changed class */}
         </div>
-        <div class="chapter-divider"></div>
-        <div class="chapter-main">
-          <p class="chapter-text">[core development]</p>
+        <div class="section-divider"></div> {/* Class can remain generic */}
+        <div class="data-main"> {/* Changed class */}
+          <p class="data-text">[detailed breakdown]</p> {/* Changed class */}
         </div>
-        <div class="chapter-divider"></div>
-        <div class="chapter-closing">
-          <p class="chapter-text">[resolution/hook]</p>
+        <div class="section-divider"></div>
+        <div class="data-closing"> {/* Changed class */}
+          <p class="data-text">[key takeaways/implications]</p> {/* Changed class */}
         </div>
       </div>
       <div class="page-footer">
-        <span class="footer-text">ProfitPen.co</span>
+        <span class="footer-text">PropAnalyzed.com</span> {/* Changed brand name */}
       </div>
     </div>`;
 
@@ -160,25 +160,25 @@ export async function generateChapter(
     content = content.replace(/[*_~`]/g, '');
     content = content.replace(/\n\s*\n/g, '\n').trim();
     
-    // Calculate page number (chapter + 2 for empty page and TOC)
-    const pageNumber = chapterNumber + 2;
+    // Calculate page number (section number + 2 for empty page and TOC if that structure is kept)
+    const pageNumber = chapterNumber + 2; // This logic might need review based on how "pages" vs "sections" are handled
     
     // Ensure the content has the proper structure
-    if (!content.includes('<div class="page">')) {
+    if (!content.includes('<div class="page">')) { // "page" class can remain if layout relies on it
       content = `
         <div class="page">
           <div class="page-header">
             <span class="page-number">${pageNumber}</span>
-            <span class="chapter-title">Chapter ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ''}</span>
+            <span class="section-title">Section ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ''}</span>
           </div>
           <div class="page-content">
-            <h2 class="chapter-heading">Chapter ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ''}</h2>
-            <div class="chapter-opening">
-              <p class="chapter-text">${content}</p>
+            <h2 class="section-heading">Section ${chapterNumber}${chapterTitle ? `: ${chapterTitle}` : ''}</h2>
+            <div class="data-summary"> {/* Changed class */}
+              <p class="data-text">${content}</p> {/* Changed class */}
             </div>
           </div>
           <div class="page-footer">
-            <span class="footer-text">ProfitPen.co</span>
+            <span class="footer-text">PropAnalyzed.com</span> {/* Changed brand name */}
           </div>
         </div>`;
     }
@@ -197,9 +197,9 @@ export async function generateChapter(
         `<p class="chapter-text">${finalText}</p>`);
     } else if (words.length < 150) {
       // Add a brief hook for the next chapter if content is too short
-      const hookText = ' The stage is set for the next chapter, where these developments will take an unexpected turn...';
-      content = content.replace(/<div class="chapter-closing">([\s\S]*?)<\/div>/g,
-        `<div class="chapter-closing">$1${hookText}</div>`);
+    const hookText = ' Further analysis in subsequent sections will build upon these findings...'; // Changed hook text
+    content = content.replace(/<div class="data-closing">([\s\S]*?)<\/div>/g, // Changed class
+      `<div class="data-closing">$1${hookText}</div>`);
     }
     
     return content;

@@ -78,7 +78,7 @@ export default function ChapterList({
     <div className="w-1/3 border-l border-gray-200 bg-gray-50">
       <div className="p-6 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Chapters ({chapters.length + 1})</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Properties/Leads ({chapters.length + 1})</h2> {/* Changed */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
@@ -162,7 +162,7 @@ export default function ChapterList({
                 }
               }}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Refresh Chapters"
+              title="Refresh List" // Changed
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -175,7 +175,7 @@ export default function ChapterList({
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search chapters..."
+            placeholder="Search properties by address, owner..." // Changed
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -190,9 +190,9 @@ export default function ChapterList({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="order">Sort by Order</option>
-            <option value="title">Sort by Title</option>
-            <option value="quality">Sort by Quality</option>
-            <option value="wordCount">Sort by Word Count</option>
+            <option value="title">Sort by Address/Name</option> {/* Changed */}
+            <option value="quality">Sort by Lead Score</option> {/* Changed */}
+            <option value="wordCount">Sort by Data Completeness</option> {/* Changed */}
           </select>
         </div>
       </div>
@@ -209,9 +209,9 @@ export default function ChapterList({
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium text-gray-900 mb-1">📋 Table of Contents</h3>
+              <h3 className="font-medium text-gray-900 mb-1">📋 Property/Lead Summary</h3> {/* Changed */}
               <div className="flex items-center gap-3 text-sm text-gray-600">
-                <span>Page 2</span>
+                <span>Summary View</span> {/* Changed */}
               </div>
             </div>
           </div>
@@ -230,12 +230,12 @@ export default function ChapterList({
           >
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-gray-900 mb-1 truncate">{chapter.title}</h3>
+                <h3 className="font-medium text-gray-900 mb-1 truncate">{chapter.title}</h3> {/* Title might be address */}
                 <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-                  <span>Page {chapter.pageNumbers.join(', ')}</span>
-                  <span>{chapter.wordCount.toLocaleString()} words</span>
+                  <span>Record ID: {chapter.pageNumbers.join(', ')}</span> {/* Changed */}
+                  <span>{chapter.wordCount.toLocaleString()} Data Points</span> {/* Changed */}
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getQualityColor(chapter.quality)}`}>
-                    {chapter.quality}/10
+                    Lead Score: {chapter.quality}/10 {/* Changed */}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -252,7 +252,7 @@ export default function ChapterList({
                   }}
                   disabled={isRegenerating[chapter.id]}
                   className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
-                  title="Regenerate Chapter"
+                  title="Refresh Data" // Changed
                 >
                   {isRegenerating[chapter.id] ? (
                     <div className="w-4 h-4 border border-gray-500 border-t-transparent rounded-full animate-spin"></div>
@@ -268,7 +268,7 @@ export default function ChapterList({
                     handleDeleteChapter(chapter.id);
                   }}
                   className="p-1 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                  title="Delete Chapter"
+                  title="Delete Property/Lead" // Changed
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

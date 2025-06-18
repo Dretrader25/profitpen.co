@@ -26,8 +26,8 @@ const Cover = React.forwardRef((props: any, ref: any) => {
   return (
     <div className={styles.cover} ref={ref}>
       <div>
-        <h1>Reading View</h1>
-        <p>Click to start reading</p>
+        <h1>Detailed Report View</h1> {/* Changed */}
+        <p>Click to view details</p> {/* Changed */}
       </div>
     </div>
   );

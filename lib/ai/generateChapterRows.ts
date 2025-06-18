@@ -1,70 +1,65 @@
 import { genAI } from './gemini';
 
-const SYSTEM_PROMPT = `You are an elite chapter writer whose work has launched multiple bestsellers. Your chapters are studied for their perfect balance of tension, character development, and addictive readability.
+const SYSTEM_PROMPT = `You are an AI data processor specializing in real estate, tasked with generating multiple structured data sections for property reports or lead summaries. Each section must be accurate, concise, and well-formatted.
 
-Your task is to generate multiple chapters that flow together seamlessly while maintaining individual chapter integrity. Each chapter should be a complete, engaging piece that can stand alone while contributing to the larger narrative.
+Your task is to generate multiple data sections that are thematically distinct yet contribute to a comprehensive overview of a property or lead. Each section should present information clearly and professionally.
 
 TECHNICAL REQUIREMENTS:
-- Each chapter must be exactly 200 words
-- Maintain consistent third-person limited perspective
-- Use past tense throughout
-- Show don't tell through action and dialogue
-- Include sensory details (sight, sound, touch, smell) when relevant
-- Balance action with reflection and dialogue
-- Maintain distinctive character voice throughout
+- Each section should aim for a word count of 150-250 words, or as appropriate for the data being presented.
+- Maintain an objective and analytical tone.
+- Present data factually and clearly.
+- Use bullet points or lists for multiple data items within a section if it enhances readability.
 
 FORMATTING REQUIREMENTS:
-- Each chapter must be properly formatted with HTML structure
-- Include page headers with chapter numbers and titles
-- Include page footers with website reference
-- Use proper CSS classes for styling
-- Ensure consistent spacing and typography
+- Each section must be properly formatted with HTML structure.
+- Include page/section headers with section numbers and titles.
+- Include page/section footers with a brand reference.
+- Use appropriate CSS classes for styling (e.g., section-title, data-text).
+- Ensure consistent spacing and typography.
 
-Return the chapters as a single string with proper HTML formatting for each chapter.`;
+Return the sections as a single string with proper HTML formatting for each section.`;
 
-export async function generateChapterRows(
-  startChapter: number,
-  numberOfChapters: number,
-  previousChapters: string[],
-  storyContext: string,
-  chapterTitles: string[]
+export async function generateChapterRows( // Function name might be changed later to reflect "sections"
+  startSection: number, // Renamed parameter
+  numberOfSections: number, // Renamed parameter
+  previousSections: string[], // Renamed parameter
+  propertyContext: string, // Renamed parameter
+  sectionTitles: string[] // Renamed parameter
 ): Promise<string> {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-  const userPrompt = `Generate ${numberOfChapters} consecutive chapters starting from Chapter ${startChapter}.
+  const userPrompt = `Generate ${numberOfSections} consecutive data sections starting from Section ${startSection}.
 
-STORY CONTEXT:
-${storyContext}
+PROPERTY CONTEXT / OVERALL LEAD INFO:
+${propertyContext}
 
-PREVIOUS CHAPTERS:
-${previousChapters.slice(-2).join('\n\n---\n\n')}
+PREVIOUS SECTIONS (for context, if applicable):
+${previousSections.slice(-2).join('\n\n---\n\n')}
 
-CHAPTER TITLES:
-${chapterTitles.map((title, index) => `Chapter ${startChapter + index}: ${title}`).join('\n')}
+SECTION TITLES / PROPERTY ADDRESSES:
+${sectionTitles.map((title, index) => `Section ${startSection + index}: ${title}`).join('\n')}
 
-REQUIREMENTS FOR EACH CHAPTER:
-✓ MAGNETIC OPENING: First sentence must create immediate intrigue
-✓ ESCALATING TENSION: Build conflict throughout the chapter
-✓ CHARACTER DEPTH: Reveal new layers of personality and motivation
-✓ PLOT ADVANCEMENT: Move the story forward with purpose
-✓ SENSORY IMMERSION: Make readers feel present in every scene
-✓ EMOTIONAL INVESTMENT: Create genuine care for character outcomes
-✓ DIALOGUE MASTERY: Conversations that reveal and advance plot
-✓ COMPELLING CLIFFHANGER: End with urgent need to continue
+REQUIREMENTS FOR EACH SECTION:
+✓ DATA ACCURACY: Ensure all presented data is plausible and correctly formatted.
+✓ CLARITY & CONCISENESS: Information should be easy to understand and to the point.
+✓ RELEVANT DETAILS: Include key data points pertinent to the section's topic.
+✓ STRUCTURED PRESENTATION: Organize information logically, using lists or bullet points if helpful.
+✓ PROFESSIONAL TONE: Maintain an objective and informative style.
+✓ ACTIONABLE INFORMATION (where applicable): Highlight data that can inform decisions.
 
-Return the chapters as properly formatted HTML with the following structure for each chapter:
+Return the sections as properly formatted HTML with the following structure for each section:
 
-<div class="page">
+<div class="page"> {/* Assuming "page" class is for general layout */}
   <div class="page-header">
-    <span class="page-number">[page_number]</span>
-    <span class="chapter-title">Chapter [number]: [title]</span>
+    <span class="page-number">[page_or_section_number]</span>
+    <span class="section-title">Section [number]: [title]</span> {/* Changed class */}
   </div>
   <div class="page-content">
-    <h2 class="chapter-heading">Chapter [number]: [title]</h2>
-    <p class="chapter-text">[chapter content]</p>
+    <h2 class="section-heading">Section [number]: [title]</h2> {/* Changed class */}
+    <p class="data-text">[section content, possibly with sub-headings or lists]</p> {/* Changed class */}
   </div>
   <div class="page-footer">
-    <span class="footer-text">ProfitPen.co</span>
+    <span class="footer-text">PropAnalyzed.com</span> {/* Changed brand */}
   </div>
 </div>`;
 
@@ -72,7 +67,7 @@ Return the chapters as properly formatted HTML with the following structure for 
     const result = await model.generateContent({
       contents: [
         { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-        { role: 'model', parts: [{ text: 'I understand. I will generate multiple chapters following the specified format and requirements.' }] },
+        { role: 'model', parts: [{ text: 'I understand. I will generate multiple data sections following the specified format and requirements.' }] }, // Updated model response
         { role: 'user', parts: [{ text: userPrompt }] }
       ]
     });
@@ -95,51 +90,53 @@ Return the chapters as properly formatted HTML with the following structure for 
     // Split into individual chapters and process each one
     const chapters = content.split(/<div class="page">/).filter(Boolean);
     
-    // Process each chapter to ensure proper formatting and word count
-    const processedChapters = chapters.map((chapter: string, index: number) => {
-      const chapterNumber = startChapter + index;
-      const pageNumber = chapterNumber + 2; // Account for empty page and TOC
-      const chapterTitle = chapterTitles[index];
+    // Process each section to ensure proper formatting and word count (if strict word count is still desired)
+    const processedSections = chapters.map((sectionHtml: string, index: number) => { // Renamed 'chapters' to 'sectionsHtml' for clarity in this map
+      const sectionNumber = startSection + index;
+      const pageNumber = sectionNumber + 2; // This might be re-evaluated if TOC structure changes
+      const currentSectionTitle = sectionTitles[index];
 
-      // Extract the main content
-      const contentMatch = chapter.match(/<p class="chapter-text">([\s\S]*?)<\/p>/);
-      let chapterContent = contentMatch ? contentMatch[1] : '';
+      // Extract the main content (assuming it's within a p.data-text or similar)
+      const contentMatch = sectionHtml.match(/<p class="data-text">([\s\S]*?)<\/p>/); // Adjusted class
+      let sectionContent = contentMatch ? contentMatch[1] : sectionHtml; // Fallback to full HTML if specific tag not found
 
-      // Clean up the content
-      chapterContent = chapterContent
-        .replace(/<[^>]*>/g, '') // Remove any HTML tags
+      // Clean up the content (basic cleaning)
+      sectionContent = sectionContent
+        .replace(/<[^>]*>/g, '') // Remove any HTML tags if we want pure text for word count
         .replace(/\s+/g, ' ')    // Normalize whitespace
         .trim();
 
-      // Ensure word count is exactly 200
-      const words = chapterContent.split(/\s+/);
-      if (words.length > 200) {
-        chapterContent = words.slice(0, 200).join(' ') + '...';
-      } else if (words.length < 200) {
-        // Add placeholder text if needed
-        chapterContent += ' This chapter continues to explore the key concepts and ideas presented, providing deeper insights and practical applications. Through careful analysis and real-world examples, we develop a comprehensive understanding of the material.';
+      // Word count adjustment logic (might need to be more flexible for data sections)
+      const words = sectionContent.split(/\s+/);
+      const targetWordCount = 200; // Example, might vary per section type
+      if (words.length > targetWordCount) {
+        sectionContent = words.slice(0, targetWordCount).join(' ') + '...';
+      } else if (words.length < targetWordCount - 50) { // If significantly shorter
+        sectionContent += ' Additional details and data points can be found in the full report.'; // More generic placeholder
       }
 
-      // Reconstruct the chapter with proper formatting
+      // Reconstruct the section with proper formatting
+      // Note: The AI is asked to return this structure, this is a fallback/cleanup.
+      // It's better if the AI adheres to the requested HTML structure directly.
       return `
 <div class="page">
   <div class="page-header">
     <span class="page-number">${pageNumber}</span>
-    <span class="chapter-title">Chapter ${chapterNumber}: ${chapterTitle}</span>
+    <span class="section-title">Section ${sectionNumber}: ${currentSectionTitle}</span>
   </div>
   <div class="page-content">
-    <h2 class="chapter-heading">Chapter ${chapterNumber}: ${chapterTitle}</h2>
-    <p class="chapter-text">${chapterContent}</p>
+    <h2 class="section-heading">Section ${sectionNumber}: ${currentSectionTitle}</h2>
+    <p class="data-text">${sectionContent}</p> {/* Ensure content is properly HTML escaped if inserted directly */}
   </div>
   <div class="page-footer">
-    <span class="footer-text">ProfitPen.co</span>
+    <span class="footer-text">PropAnalyzed.com</span>
   </div>
 </div>`;
     });
 
-    return processedChapters.join('\n');
+    return processedSections.join('\n');
   } catch (error) {
-    console.error('Error generating chapters:', error);
+    console.error('Error generating data sections:', error); // Changed error message
     throw error;
   }
 } 

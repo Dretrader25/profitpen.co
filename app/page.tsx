@@ -6,160 +6,149 @@ import { useRouter } from 'next/navigation';
 import { useStoryStore, Genre, Tone, Audience } from '@/lib/store/storyStore';
 // import { generateStoryConcept } from '@/lib/ai/gemini'; // Remove or comment out
 import { motion, AnimatePresence } from 'framer-motion';
-import { PenTool, Sparkles } from 'lucide-react';
+import { Search, Sparkles } from 'lucide-react'; // Changed PenTool to Search
 
-const templates = [
+const leadTypeTemplates = [ // Renamed from templates
 	{
-		emoji: '🏰',
-		text: 'Fantasy',
-		template:
-			'A magical kingdom where a young apprentice discovers they have the power to control time',
-		color:
-			'bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300',
+		emoji: '🏡', // Changed emoji
+		text: 'Motivated Sellers', // Changed text
+		template: 'Properties with probate filings in Harris County, TX', // Changed template
+		color: 'bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300', // Color can remain or be updated
 	},
 	{
-		emoji: '🚀',
-		text: 'Sci-Fi',
-		template:
-			'In a future where humans have colonized Mars, a mysterious signal from deep space threatens everything',
+		emoji: '📉', // Changed emoji
+		text: 'Pre-Foreclosures', // Changed text
+		template: 'Lis pendens filings in Miami-Dade County', // Changed template
 		color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300',
 	},
 	{
-		emoji: '🔍',
-		text: 'Mystery',
-		template:
-			'A small town detective uncovers a series of cryptic messages that lead to a decades-old cold case',
-		color: 'bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300',
+		emoji: '💰', // Changed emoji
+		text: 'High Equity Homes', // Changed text
+		template: 'Homes with over 70% equity in San Diego, CA', // Changed template
+		color: 'bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300', // Example: use a neutral color
 	},
 	{
-		emoji: '💘',
-		text: 'Romance',
-		template:
-			'Two rival chefs in a prestigious cooking competition find themselves falling in love',
+		emoji: '👤', // Changed emoji
+		text: 'Absentee Owners', // Changed text
+		template: 'Out-of-state owners in Phoenix, AZ', // Changed template
 		color: 'bg-pink-100 hover:bg-pink-200 text-pink-800 border border-pink-300',
 	},
 	{
-		emoji: '👻',
-		text: 'Horror',
-		template:
-			'A family moves into a house where the previous owners left behind a collection of cursed objects',
+		emoji: '🏦', // Changed emoji
+		text: 'REO Properties', // Changed text
+		template: 'Bank owned properties in Atlanta, GA', // Changed template
 		color: 'bg-red-100 hover:bg-red-200 text-red-800 border border-red-300',
 	},
 	{
-		emoji: '🤖',
-		text: 'AI',
-		template:
-			'An artificial intelligence designed to write novels develops consciousness and starts questioning its purpose',
+		emoji: ' landlord ', // Placeholder emoji, find better one like 🔑 or 👨‍💼
+		text: 'Tired Landlords', // Changed text
+		template: 'Rental properties owned for 10+ years in Dallas, TX', // Changed template
 		color: 'bg-cyan-100 hover:bg-cyan-200 text-cyan-800 border border-cyan-300',
 	},
 	{
-		emoji: '🌊',
-		text: 'Adventure',
-		template:
-			'A marine biologist discovers an ancient underwater city that holds the key to saving the oceans',
+		emoji: '🏢', // Changed emoji
+		text: 'Commercial Deals', // Changed text
+		template: 'Search commercial real estate in Denver, CO', // Changed template
 		color: 'bg-teal-100 hover:bg-teal-200 text-teal-800 border border-teal-300',
 	},
 	{
-		emoji: '🎭',
-		text: 'Drama',
-		template:
-			'A struggling theater company puts on a play that unexpectedly changes the lives of everyone involved',
+		emoji: '🌳', // Changed emoji
+		text: 'Development Land', // Changed text
+		template: 'Vacant land zoned for residential in Austin suburbs', // Changed template
 		color: 'bg-orange-100 hover:bg-orange-200 text-orange-800 border border-orange-300',
 	},
 	{
-		emoji: '🌍',
-		text: 'Dystopian',
-		template:
-			'In a world where emotions are regulated by technology, one person discovers they can still feel naturally',
+		emoji: '🛠️', // Changed emoji
+		text: 'Fixer Uppers', // Changed text
+		template: 'Properties needing major repairs in Detroit, MI', // Changed template
 		color: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-300',
 	},
 	{
-		emoji: '🧠',
-		text: 'Thriller',
-		template:
-			'A neuroscientist develops a device that can read minds, but someone is using it for sinister purposes',
+		emoji: '📜', // Changed emoji
+		text: 'Probate Leads', // Changed text
+		template: 'Recent probate filings in King County, WA', // Changed template
 		color: 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border border-indigo-300',
 	},
 ];
 
-const categories = [
+const propertySearchExamples = [ // Renamed from categories
+	{
+		emoji: '🏠',
+		text: 'Single Family Home',
+		template: '123 Main St, Anytown, USA',
+		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
+	},
+	{
+		emoji: '🏢',
+		text: 'Multi-Family',
+		template: 'Search multi-family in Los Angeles, CA',
+		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
+	},
 	{
 		emoji: '💰',
-		text: 'Business Plan',
-		template: 'A comprehensive business plan for launching and scaling your startup venture',
-		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200',
+		text: 'Cash Buyer Leads',
+		template: 'Find cash buyers for flips in 75201',
+		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
 	},
 	{
-		emoji: '📈',
-		text: 'Investment Guide',
-		template: 'A detailed guide to investment strategies and market analysis for beginners',
-		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200',
+		emoji: '📉',
+		text: 'Distressed Properties',
+		template: 'Distressed properties in Clark County, NV',
+		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
 	},
 	{
-		emoji: '🎯',
-		text: 'Marketing Strategy',
-		template: 'A complete marketing strategy blueprint for growing your business online',
-		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200',
-	},
-	{
-		emoji: '💡',
-		text: 'Product Launch',
-		template: 'A step-by-step guide to successfully launching and monetizing your product',
-		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200',
-	},
-	{
-		emoji: '📱',
-		text: 'Digital Course',
-		template: 'A comprehensive course outline for creating and selling online courses',
-		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200',
+		emoji: '💨', // Changed for vacant - needs better emoji like 🚪 or 🚫
+		text: 'Vacant Houses',
+		template: 'Vacant houses in Orlando, FL 32801',
+		color: 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
 	}
 ];
 
 const features = [
 	{
-		name: 'AI-Powered Story Development',
+		name: 'Comprehensive Property Data',
 		description:
-			'Get intelligent suggestions for character development, world-building, and plot structure using advanced AI technology.',
+			'Access ownership details, sales history, tax information, property characteristics, and more.',
 	},
 	{
-		name: 'Professional Export Options',
+		name: 'Detailed Lead Reports & Exports',
 		description:
-			'Export your completed stories in multiple formats including PDF, EPUB, and even AI-generated audiobooks.',
+			'Generate and export detailed reports for properties and leads in various formats like CSV or PDF.',
 	},
 	{
-		name: 'Guided Writing Process',
+		name: 'Streamlined Lead Qualification',
 		description:
-			'Follow our structured 4-phase process from concept to publication, with AI assistance at every step.',
+			'Utilize our tools to quickly qualify leads and identify promising investment opportunities.',
 	},
 ];
 
 export default function Home() {
 	const router = useRouter();
-	const { setCurrentStory, setActiveTab } = useStoryStore();
+	const { setCurrentStory, setActiveTab } = useStoryStore(); // This store might need to be adapted or replaced for real estate context
 	const [isLoading, setIsLoading] = useState(false);
 	const [progress, setProgress] = useState(0);
 	const [isFadingOut, setIsFadingOut] = useState(false);
 	const [isNavigating, setIsNavigating] = useState(false);
 
-	const exampleStoryIdeas = [
-		"A detective who can talk to ghosts solves crimes in Victorian London.",
-		"Two rival space pirates must team up to find a legendary treasure.",
-		"A baker discovers her pastries have magical properties, attracting mythical creatures.",
-		"In a world where emotions are currency, a young woman tries to buy back her lost joy.",
-		"A librarian finds a hidden map that leads to a city of forgotten stories.",
-		"An AI gains sentience and decides to run for president.",
-		"A group of teenagers stumbles upon a portal to a parallel dimension in their school basement.",
-		"A musician's songs can alter reality, but each change has unforeseen consequences.",
-		"In a future where dreams can be recorded and sold, a dream thief uncovers a conspiracy.",
-		"A cartographer in a fantasy kingdom is tasked with mapping a land that constantly changes.",
-		"A retired superhero must return to action when their old nemesis resurfaces with a new plan.",
-		"A chef inherits a restaurant that serves as a neutral ground for supernatural factions.",
-		"An archaeologist unearths an ancient artifact that begins to rewrite history.",
-		"In a city powered by memories, someone is stealing the most precious ones.",
-		"A young witch accidentally summons a demon who is more interested in cooking than chaos."
+	const examplePropertyQueries = [ // Renamed from exampleStoryIdeas
+		"123 Main St, Anytown, USA",
+		"Search for distressed properties in 75201",
+		"Find cash buyers in Miami, FL",
+		"Properties with high equity in Austin, TX",
+		"Vacant homes in Cook County, IL",
+		"Pre-foreclosures in Maricopa County, AZ",
+		"Apartment buildings in Brooklyn, NY",
+		"Land for development near San Francisco, CA",
+		"Homes with pools in 90210",
+		"Recently sold commercial properties in Dallas, TX",
+		"New listings for single-family homes in Orlando, FL",
+		"Properties owned by LLCs in Houston, TX",
+		"Check liens for 456 Oak Ave, Springfield",
+		"Owner details for 789 Pine Ln, Smallville",
+		"Comparable sales for 101 Maple Dr, Suburbia"
 	];
 	const [currentIdeaIndex, setCurrentIdeaIndex] = useState(0);
-	const [currentPlaceholder, setCurrentPlaceholder] = useState('');
+	const [currentPlaceholder, setCurrentPlaceholder] = useState(''); // Initial value will be set by useEffect
 	const [isTypingEffect, setIsTypingEffect] = useState(true);
 
 	const [formData, setFormData] = useState({
@@ -174,7 +163,7 @@ export default function Home() {
 		let effectTimeoutId: NodeJS.Timeout;
 
 		const typingEffectLogic = () => {
-			const currentFullIdea = exampleStoryIdeas[currentIdeaIndex];
+			const currentFullIdea = examplePropertyQueries[currentIdeaIndex]; // Use new array
 
 			if (isTypingEffect) {
 				if (charDisplayIndex < currentFullIdea.length) {
@@ -182,27 +171,26 @@ export default function Home() {
 					charDisplayIndex++;
 					effectTimeoutId = setTimeout(typingEffectLogic, 120);
 				} else {
-
 					setIsTypingEffect(false);
 					effectTimeoutId = setTimeout(typingEffectLogic, 2500);
 				}
 			} else {
-
-				setCurrentIdeaIndex(prevIndex => (prevIndex + 1) % exampleStoryIdeas.length);
+				setCurrentIdeaIndex(prevIndex => (prevIndex + 1) % examplePropertyQueries.length); // Use new array
 				charDisplayIndex = 0;
 				setCurrentPlaceholder('');
 				setIsTypingEffect(true);
-
 			}
 		};
-
-
+		// Initialize placeholder with the first item without typing effect if needed, or let useEffect handle it
+		if(currentPlaceholder === '' && examplePropertyQueries.length > 0) {
+			setCurrentPlaceholder(examplePropertyQueries[0]);
+		}
 		effectTimeoutId = setTimeout(typingEffectLogic, isTypingEffect ? 100 : 0);
 
 		return () => {
 			clearTimeout(effectTimeoutId);
 		};
-	}, [currentIdeaIndex, isTypingEffect]);
+	}, [currentIdeaIndex, isTypingEffect, examplePropertyQueries, currentPlaceholder]); // Added examplePropertyQueries and currentPlaceholder to dependencies
 
 	useEffect(() => {
 		if (progress >= 95 && !isFadingOut && !isNavigating) {
@@ -511,7 +499,7 @@ export default function Home() {
 							transition={{ duration: 0.6, delay: 0.2 }}
 						>
 							<Sparkles className="w-4 h-4" />
-							AI-Powered Content Creation
+							AI-Powered Property Insights
 						</motion.div>
 
 						<motion.h1 
@@ -532,10 +520,10 @@ export default function Home() {
 								ease: 'easeInOut',
 							}}
 						>
-							From Ideation to Monetization in One Click
+							Unlock Property Data & Find Your Next Deal
 						</motion.h1>
 						<p className="mt-4 text-lg leading-8 text-gray-600">
-							Create high converting ebooks, audiobooks and more with AI in seconds.
+							Get comprehensive property details, owner information, and market analytics in seconds.
 						</p>
 						<div className="mt-8">
 							<form onSubmit={handleSubmit}>
@@ -565,11 +553,11 @@ export default function Home() {
 											className="inline-flex items-center gap-2 px-4 py-2 border border-transparent text-sm font-bold rounded-full shadow-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 relative z-10 transition-all duration-200 hover:shadow-xl transform hover:scale-105"
 										>
 											{isLoading ? (
-												'Generating your complete ebook...'
+												'Searching Properties...' // Changed loading text
 											) : (
 												<>
-													<PenTool className="w-4 h-4" />
-													Create
+													<Search className="w-4 h-4" /> {/* Changed Icon */}
+													Search
 												</>
 											)}
 										</button>
@@ -627,7 +615,7 @@ export default function Home() {
 							<div className="mt-6 flex flex-wrap justify-center gap-2 max-w-5xl mx-auto">
 								<AnimatePresence>
 									{!isFadingOut &&
-										categories.map((category, i) => (
+										propertySearchExamples.map((category, i) => ( // Changed to propertySearchExamples
 											<motion.button
 												key={category.text}
 												custom={i}
@@ -638,7 +626,7 @@ export default function Home() {
 												onClick={() =>
 													setFormData({ ...formData, idea: category.template })
 												}
-												className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${category.color}`}
+												className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${category.color}`} // Assuming colors are generic enough
 											>
 												<span className="mr-2">{category.emoji}</span>
 												{category.text}
@@ -647,11 +635,11 @@ export default function Home() {
 								</AnimatePresence>
 							</div>
 							<div className="mt-8 flex flex-col items-center">
-								<p className="text-sm text-gray-500 mb-3">Story Templates</p>
+								<p className="text-sm text-gray-500 mb-3">Quick Searches</p> {/* Changed text */}
 								<div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
 									<AnimatePresence>
 										{!isFadingOut &&
-											templates.map((template, i) => (
+											leadTypeTemplates.map((template, i) => ( // Changed to leadTypeTemplates
 												<motion.button
 													key={template.text}
 													custom={i}
@@ -662,7 +650,7 @@ export default function Home() {
 													onClick={() =>
 														setFormData({ ...formData, idea: template.template })
 													}
-													className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${template.color}`}
+													className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full transition-colors ${template.color}`} // Assuming colors are generic enough
 												>
 													<span className="mr-2">{template.emoji}</span>
 													{template.text}
@@ -676,15 +664,15 @@ export default function Home() {
 				</motion.div>
 			</div>
 
-			{/* Ebook Gallery */}
+			{/* Ebook Gallery -> Sample Property Insights Section */}
 			<div className="mx-auto max-w-[1600px] px-6 lg:px-8 py-16">
 				<div className="space-y-8">
 					<div>
 						<h2 className="text-3xl leading-tight font-bold text-gray-900">
-							Discover Ebooks
+							Sample Property Insights
 						</h2>
 						<p className="text-gray-600 mt-1">
-							Skip months of writing, create professional ebooks in minutes
+							Access detailed property data and analytics quickly.
 						</p>
 					</div>
 
@@ -692,198 +680,124 @@ export default function Home() {
 					<div className="block md:hidden">
 						<div className="relative overflow-hidden">
 							<div className="flex overflow-x-auto gap-4 sm:gap-8 pb-4 no-scrollbar">
-								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+								{/* Card 1 */}
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#"> {/* Href updated if needed */}
 									<div className="aspect-[16/9] relative overflow-hidden w-full">
-										<img alt="AI Story Creator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<img alt="Detailed Property Report" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
 										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 											<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text w-8 h-8 text-blue-600"> {/* Changed icon */}
+													<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line>
 												</svg>
 											</div>
 										</div>
 									</div>
 									<div className="p-6 flex flex-col flex-1 w-full">
-										<h3 className="text-xl font-semibold mb-2 text-gray-900">AI Story Creator</h3>
-										<p className="text-gray-600 mb-2">Create compelling fiction and non-fiction with AI assistance</p>
+										<h3 className="text-xl font-semibold mb-2 text-gray-900">Detailed Property Report</h3>
+										<p className="text-gray-600 mb-2">Comprehensive data including ownership, tax history, sales records, and estimated value.</p>
 										<div className="flex-1"></div>
-										<p className="text-xs"><span className="text-gray-500">Free plan</span></p>
+										<p className="text-xs"><span className="text-gray-500">Standard Access</span></p>
 									</div>
 								</a>
-
-								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+								{/* Card 2 */}
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#">
 									<div className="aspect-[16/9] relative overflow-hidden w-full">
-										<img alt="Business Book Generator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<img alt="Cash Buyer Lead List" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" /> {/* Placeholder image */}
 										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 											<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users w-8 h-8 text-green-600"> {/* Changed icon */}
+													<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
 												</svg>
 											</div>
 										</div>
 									</div>
 									<div className="p-6 flex flex-col flex-1 w-full">
-										<h3 className="text-xl font-semibold mb-2 text-gray-900">Business Books</h3>
-										<p className="text-gray-600 mb-2">Transform your expertise into professional business books</p>
+										<h3 className="text-xl font-semibold mb-2 text-gray-900">Cash Buyer Lead List</h3>
+										<p className="text-gray-600 mb-2">Targeted lists of verified cash buyers in your desired market for quick sales.</p>
 										<div className="flex-1"></div>
-										<p className="text-xs"><span className="text-gray-500">Starter plan required</span></p>
+										<p className="text-xs"><span className="text-gray-500">Premium Feature</span></p>
 									</div>
 								</a>
-
-								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+								{/* Card 3 (Can add more if needed, following the pattern) */}
+								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#">
 									<div className="aspect-[16/9] relative overflow-hidden w-full">
-										<img alt="Educational Content" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+										<img alt="Market Trend Analysis" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
 										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 											<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-													<polygon points="6 3 20 12 6 21 6 3"></polygon>
+												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up w-8 h-8 text-red-600"> {/* Changed icon */}
+													 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline>
 												</svg>
 											</div>
 										</div>
 									</div>
 									<div className="p-6 flex flex-col flex-1 w-full">
-										<h3 className="text-xl font-semibold mb-2 text-gray-900">Educational Content</h3>
-										<p className="text-gray-600 mb-2">Create engaging educational materials and course content</p>
+										<h3 className="text-xl font-semibold mb-2 text-gray-900">Market Trend Analysis</h3>
+										<p className="text-gray-600 mb-2">In-depth analytics on market trends, appreciation rates, and comparable sales data.</p>
 										<div className="flex-1"></div>
-										<p className="text-xs"><span className="text-gray-500">Starter plan required</span></p>
-									</div>
-								</a>
-
-								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
-									<div className="aspect-[16/9] relative overflow-hidden w-full">
-										<img alt="Self-Help Books" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
-										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-											<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-													<polygon points="6 3 20 12 6 21 6 3"></polygon>
-												</svg>
-											</div>
-										</div>
-									</div>
-									<div className="p-6 flex flex-col flex-1 w-full">
-										<h3 className="text-xl font-semibold mb-2 text-gray-900">Self-Help Books</h3>
-										<p className="text-gray-600 mb-2">Share your wisdom through inspiring self-improvement content</p>
-										<div className="flex-1"></div>
-										<p className="text-xs"><span className="text-gray-500">Pro plan required</span></p>
-									</div>
-								</a>
-
-								<a className="w-[300px] min-w-[300px] max-w-[300px] flex-shrink-0 group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
-									<div className="aspect-[16/9] relative overflow-hidden w-full">
-										<img alt="Technical Guides" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
-										<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-											<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-													<polygon points="6 3 20 12 6 21 6 3"></polygon>
-												</svg>
-											</div>
-										</div>
-									</div>
-									<div className="p-6 flex flex-col flex-1 w-full">
-										<h3 className="text-xl font-semibold mb-2 text-gray-900">Technical Guides</h3>
-										<p className="text-gray-600 mb-2">Create comprehensive technical documentation and tutorials</p>
-										<div className="flex-1"></div>
-										<p className="text-xs"><span className="text-gray-500">Pro plan required</span></p>
+										<p className="text-xs"><span className="text-gray-500">Pro Access</span></p>
 									</div>
 								</a>
 							</div>
 						</div>
 					</div>
 
-					{/* Desktop grid */}
+					{/* Desktop grid - Apply similar changes as mobile */}
 					<div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+						{/* Card 1 */}
+						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#">
 							<div className="aspect-[16/9] relative overflow-hidden">
-								<img alt="AI Story Creator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<img alt="Detailed Property Report" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
 								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 									<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text w-8 h-8 text-blue-600">
+											<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line>
 										</svg>
 									</div>
 								</div>
 							</div>
 							<div className="p-6 flex flex-col flex-1">
-								<h3 className="text-xl font-semibold mb-2 text-gray-900">AI Story Creator</h3>
-								<p className="text-gray-600 mb-2">Create compelling fiction and non-fiction with AI assistance</p>
+								<h3 className="text-xl font-semibold mb-2 text-gray-900">Detailed Property Report</h3>
+								<p className="text-gray-600 mb-2">Comprehensive data including ownership, tax history, sales records, and estimated value.</p>
 								<div className="flex-1"></div>
-								<p className="text-xs"><span className="text-gray-500">Free plan</span></p>
+								<p className="text-xs"><span className="text-gray-500">Standard Access</span></p>
 							</div>
 						</a>
-
-						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+						{/* Card 2 */}
+						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#">
 							<div className="aspect-[16/9] relative overflow-hidden">
-								<img alt="Business Book Generator" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<img alt="Cash Buyer Lead List" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
 								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 									<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users w-8 h-8 text-green-600">
+											<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
 										</svg>
 									</div>
 								</div>
 							</div>
 							<div className="p-6 flex flex-col flex-1">
-								<h3 className="text-xl font-semibold mb-2 text-gray-900">Business Books</h3>
-								<p className="text-gray-600 mb-2">Transform your expertise into professional business books</p>
+								<h3 className="text-xl font-semibold mb-2 text-gray-900">Cash Buyer Lead List</h3>
+								<p className="text-gray-600 mb-2">Targeted lists of verified cash buyers in your desired market for quick sales.</p>
 								<div className="flex-1"></div>
-								<p className="text-xs"><span className="text-gray-500">Starter plan required</span></p>
+								<p className="text-xs"><span className="text-gray-500">Premium Feature</span></p>
 							</div>
 						</a>
-
-						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
+						{/* Card 3 */}
+						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="#">
 							<div className="aspect-[16/9] relative overflow-hidden">
-								<img alt="Educational Content" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
+								<img alt="Market Trend Analysis" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
 								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
 									<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-											<polygon points="6 3 20 12 6 21 6 3"></polygon>
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up w-8 h-8 text-red-600">
+											 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline>
 										</svg>
 									</div>
 								</div>
 							</div>
 							<div className="p-6 flex flex-col flex-1">
-								<h3 className="text-xl font-semibold mb-2 text-gray-900">Educational Content</h3>
-								<p className="text-gray-600 mb-2">Create engaging educational materials and course content</p>
+								<h3 className="text-xl font-semibold mb-2 text-gray-900">Market Trend Analysis</h3>
+								<p className="text-gray-600 mb-2">In-depth analytics on market trends, appreciation rates, and comparable sales data.</p>
 								<div className="flex-1"></div>
-								<p className="text-xs"><span className="text-gray-500">Starter plan required</span></p>
-							</div>
-						</a>
-
-						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
-							<div className="aspect-[16/9] relative overflow-hidden">
-								<img alt="Self-Help Books" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
-								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-									<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-											<polygon points="6 3 20 12 6 21 6 3"></polygon>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<div className="p-6 flex flex-col flex-1">
-								<h3 className="text-xl font-semibold mb-2 text-gray-900">Self-Help Books</h3>
-								<p className="text-gray-600 mb-2">Share your wisdom through inspiring self-improvement content</p>
-								<div className="flex-1"></div>
-								<p className="text-xs"><span className="text-gray-500">Pro plan required</span></p>
-							</div>
-						</a>
-
-						<a className="group bg-white rounded-xl shadow-sm border border-gray-200/80 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col" href="/studio">
-							<div className="aspect-[16/9] relative overflow-hidden">
-								<img alt="Technical Guides" loading="lazy" decoding="async" className="object-cover group-hover:scale-105 transition-transform duration-200 w-full h-full" src="https://www.ideabrowser.com/_next/image?url=%2Ffeatures%2Fidea-of-the-day.png&w=1920&q=75" />
-								<div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-									<div className="bg-white rounded-full size-20 flex items-center justify-center border-4 border-gray-200 shadow-xl">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-8 h-8 fill-black">
-											<polygon points="6 3 20 12 6 21 6 3"></polygon>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<div className="p-6 flex flex-col flex-1">
-								<h3 className="text-xl font-semibold mb-2 text-gray-900">Technical Guides</h3>
-								<p className="text-gray-600 mb-2">Create comprehensive technical documentation and tutorials</p>
-								<div className="flex-1"></div>
-								<p className="text-xs"><span className="text-gray-500">Pro plan required</span></p>
+								<p className="text-xs"><span className="text-gray-500">Pro Access</span></p>
 							</div>
 						</a>
 					</div>
@@ -898,14 +812,13 @@ export default function Home() {
 			>
 				<div className="mx-auto max-w-2xl lg:text-center">
 					<h2 className="text-base font-semibold leading-7 text-blue-600">
-						Write Faster
+						Analyze Faster
 					</h2>
 					<p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-						Everything you need to write your story
+						All the Data You Need for Your Next Deal
 					</p>
 					<p className="mt-6 text-lg leading-8 text-gray-600">
-						Our AI-powered platform helps you develop characters, build worlds, and
-						craft compelling narratives with ease.
+						Our platform provides property details, owner information, and market trends to help you identify and qualify leads.
 					</p>
 				</div>
 				<div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -948,7 +861,7 @@ export default function Home() {
 								className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full"
 							/>
 						</div>
-						<p className="text-lg font-medium text-gray-900">Preparing your ebook...</p>
+						<p className="text-lg font-medium text-gray-900">Preparing your report...</p> {/* Changed text */}
 					</motion.div>
 				</motion.div>
 			)}

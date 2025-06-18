@@ -7,15 +7,16 @@ import ThemeToggle from './ThemeToggle';
 import { supabase } from '@/lib/supabaseClient'; // Import supabase
 
 const navigation = [
-  { name: 'Story Studio', href: '/studio' },
-  { name: 'Generate', href: '/dashboard/generate' },
-  { name: 'Pricing', href: '/pricing' },
+  { name: 'Lead Dashboard', href: '/studio' }, // Changed from "Story Studio"
+  { name: 'Property Search', href: '/dashboard/generate' }, // Changed from "Generate"
+  { name: 'Directory', href: '/export' }, // Changed from "Export" (or added if missing)
+  { name: 'Pricing', href: '/pricing' }, // Pricing remains for now
 ];
 
 const moreLinks = [
-  { name: 'Templates', href: '/templates' },
-  { name: 'About', href: '/about' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Search Templates', href: '/templates' }, // e.g., for saved search criteria
+  { name: 'About Us', href: '/about' }, // "About Us" is more standard than "About"
+  { name: 'Resources', href: '/blog' }, // "Blog" could become "Resources" or "Guides"
 ];
 
 export default function Navbar() {
@@ -47,7 +48,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center">
         <div className="flex-shrink-0">
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-medium text-gray-900">profitpen</span>
+            <span className="text-2xl font-medium text-gray-900">PropAnalyzed</span>
           </Link>
         </div>
 

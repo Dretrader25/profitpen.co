@@ -26,46 +26,46 @@ export type StudioTab =
 
 const tabConfigs = {
   overview: {
-    title: 'Overview',
-    description: 'Book summary and quick actions',
-    icon: '📖',
-    component: ContentEditor
+    title: 'Lead Summary', // Changed
+    description: 'Summary of current lead/property and quick actions', // Changed
+    icon: '📊', // Changed icon (example)
+    component: ContentEditor // Component might need to be different for "Lead Summary"
   },
-  chapters: {
-    title: 'Chapters',
-    description: 'Manage and edit chapters',
-    icon: '📑',
-    component: ChapterManager
+  chapters: { // This key might become 'properties' or 'leads'
+    title: 'Properties', // Changed
+    description: 'Manage and analyze properties', // Changed
+    icon: '🏘️', // Changed icon
+    component: ChapterManager // This component will need significant internal text changes
   },
-  characters: {
-    title: 'Characters',
-    description: 'Character development and profiles',
+  characters: { // This key might become 'contacts'
+    title: 'Contacts', // Changed
+    description: 'Manage property owners, buyers, sellers, etc.', // Changed
     icon: '👥',
-    component: CharacterManager
+    component: CharacterManager // This component will need significant internal text changes
   },
-  plot: {
-    title: 'Plot',
-    description: 'Story structure and outline',
-    icon: '🗺️',
-    component: PlotOutline
+  plot: { // This key might become 'dealWorkflow'
+    title: 'Deal Workflow', // Changed
+    description: 'Track your deal progression and follow-ups', // Changed
+    icon: '📈', // Changed icon (example: chart-line)
+    component: PlotOutline // This component will need significant internal text changes
   },
-  analytics: {
-    title: 'Analytics',
-    description: 'Content quality and insights',
-    icon: '📊',
-    component: BookAnalytics
+  analytics: { // This key might become 'marketData'
+    title: 'Market Data', // Changed
+    description: 'View market trends and property analytics', // Changed
+    icon: '🔍', // Changed icon (example: search-dollar)
+    component: BookAnalytics // This component will need significant internal text changes
   },
-  publishing: {
-    title: 'Publishing',
-    description: 'Export and publishing tools',
-    icon: '🚀',
-    component: PublishingTools
+  publishing: { // This key might become 'reports'
+    title: 'Reports & Export', // Changed
+    description: 'Generate reports and export lead/property data', // Changed
+    icon: '📤', // Changed icon
+    component: PublishingTools // This component will need significant internal text changes
   },
   settings: {
-    title: 'Settings',
-    description: 'Studio preferences',
+    title: 'Preferences', // Changed
+    description: 'Configure your workspace', // Changed
     icon: '⚙️',
-    component: SettingsPanel
+    component: SettingsPanel // This component might need internal text changes
   }
 };
 
@@ -391,9 +391,9 @@ export default function StudioPage() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm"
-                  onClick={() => setActiveTab('publishing')}
+                  onClick={() => setActiveTab('publishing')} // 'publishing' key might change to 'reports'
                 >
-                  Export Book
+                  Export Data
                 </motion.button>
               </div>
             </div>

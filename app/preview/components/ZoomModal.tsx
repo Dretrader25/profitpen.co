@@ -131,7 +131,7 @@ export default function ZoomModal({
           className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl"
         >
           <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
-            <h3 className="text-lg font-semibold text-gray-900">Page Preview</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Detailed Information</h3> {/* Changed */}
             <button 
               onClick={handleClose} 
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200 text-gray-600 hover:text-gray-900"

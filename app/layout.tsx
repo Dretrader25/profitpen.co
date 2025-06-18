@@ -22,8 +22,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "ProfitPen - AI Story Generation Platform",
-  description: "Create amazing stories with AI-powered assistance",
+  title: "PropAnalyzed - Real Estate Lead Enrichment & Property Analysis",
+  description: "Unlock property data, find off-market deals, and qualify real estate leads with PropAnalyzed. Your AI-powered property intelligence tool.",
 };
 
 export default function RootLayout({

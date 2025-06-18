@@ -89,7 +89,7 @@ export default function SignUpPage() {
         <div className="max-w-lg mx-auto">
           <div className="bg-white p-8 sm:p-10 rounded-xl shadow-2xl border border-gray-200/80">
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-900">
-              Create Your Account
+              Join PropAnalyzed
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">

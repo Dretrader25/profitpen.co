@@ -620,10 +620,10 @@ export default function ChapterManager({
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                      📋 Table of Contents
+                      📋 Property Index / Lead List Summary
                     </h2>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Page 2</span>
+                      <span>Summary View</span>
                       <span>Navigation structure</span>
                       <span className="font-medium text-blue-600">
                         Essential
@@ -650,13 +650,13 @@ export default function ChapterManager({
                     <div className="flex items-center justify-between">
                       <div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                          Chapter {chapter.id}: {chapter.title}
+                          Property: {chapter.title} {/* Changed "Chapter X:" */}
                         </h2>
                         <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span>Page {chapter.pageNumbers[0]}</span>
-                          <span>{chapter.wordCount} words</span>
+                          <span>Record ID: {chapter.pageNumbers[0]}</span> {/* Changed "Page" to "Record ID" */}
+                          <span>{chapter.wordCount} Data Points</span> {/* Changed "words" to "Data Points" */}
                           <span className={`font-medium ${getQualityColor(chapter.quality)}`}>
-                            Quality: {chapter.quality}/10
+                            Lead Score: {chapter.quality}/10 {/* Changed "Quality" to "Lead Score" */}
                           </span>
                         </div>
                       </div>
@@ -672,7 +672,7 @@ export default function ChapterManager({
                           ) : (
                             <Sparkles className="w-4 h-4" />
                           )}
-                          Regenerate
+                          Refresh Data {/* Changed */}
                         </button>
 
                         <button
@@ -701,7 +701,7 @@ export default function ChapterManager({
                           className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-700 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
                         >
                           <Trash2 className="w-4 h-4" />
-                          Delete
+                          Delete Property {/* Changed */}
                         </button>
                       </div>
                     </div>
@@ -717,12 +717,12 @@ export default function ChapterManager({
                 <div className="prose max-w-none">
                   <div className="bg-white border border-gray-200 rounded-lg p-8">
                     <div className="text-center mb-8">
-                      <h1 className="text-3xl font-bold text-gray-900 mb-4">Table of Contents</h1>
-                      <p className="text-gray-600">Navigate through your book chapters</p>
+                      <h1 className="text-3xl font-bold text-gray-900 mb-4">Property Index / Lead List</h1> {/* Changed */}
+                      <p className="text-gray-600">Navigate through your properties/leads</p> {/* Changed */}
                     </div>
                     
                     <div className="space-y-3">
-                      {chapters.map((chapter, index) => (
+                      {chapters.map((chapter, index) => ( // chapters variable will be renamed later if possible, for now, map over it
                         <div key={chapter.id} 
                              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
                              onClick={() => setSelectedChapter(chapter.id)}
@@ -732,15 +732,15 @@ export default function ChapterManager({
                               {index + 1}
                             </span>
                             <div>
-                              <h3 className="font-medium text-gray-900">{chapter.title}</h3>
+                              <h3 className="font-medium text-gray-900">{chapter.title}</h3> {/* Title might be address */}
                               <p className="text-sm text-gray-500">
-                                Page {chapter.pageNumbers[0]} • {chapter.wordCount} words
+                                Record ID: {chapter.pageNumbers[0]} • {chapter.wordCount} Data Points {/* Changed */}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className={`px-2 py-1 rounded text-xs font-medium ${getQualityColor(chapter.quality)} bg-opacity-10`}>
-                              {chapter.quality}/10
+                              Lead Score: {chapter.quality}/10 {/* Changed */}
                             </span>
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -751,23 +751,23 @@ export default function ChapterManager({
                     </div>
                     
                     <div className="mt-8 p-6 bg-blue-50 rounded-lg">
-                      <h3 className="font-semibold text-blue-900 mb-2">Book Statistics</h3>
+                      <h3 className="font-semibold text-blue-900 mb-2">Lead List Statistics</h3> {/* Changed */}
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-blue-700">Total Chapters:</span>
+                          <span className="text-blue-700">Total Properties/Leads:</span> {/* Changed */}
                           <span className="font-medium ml-2">{chapters.length}</span>
                         </div>
                         <div>
-                          <span className="text-blue-700">Total Words:</span>
+                          <span className="text-blue-700">Total Data Points:</span> {/* Changed */}
                           <span className="font-medium ml-2">{chapters.reduce((sum, ch) => sum + ch.wordCount, 0).toLocaleString()}</span>
                         </div>
                         <div>
-                          <span className="text-blue-700">Average Quality:</span>
+                          <span className="text-blue-700">Average Lead Score:</span> {/* Changed */}
                           <span className="font-medium ml-2">{(chapters.reduce((sum, ch) => sum + ch.quality, 0) / chapters.length).toFixed(1)}/10</span>
                         </div>
                         <div>
-                          <span className="text-blue-700">Total Pages:</span>
-                          <span className="font-medium ml-2">{Math.max(...chapters.flatMap(ch => ch.pageNumbers))}</span>
+                          <span className="text-blue-700">Total Records:</span> {/* Changed */}
+                          <span className="font-medium ml-2">{chapters.length}</span> {/* Simplified from pageNumbers */}
                         </div>
                       </div>
                     </div>
@@ -792,9 +792,9 @@ export default function ChapterManager({
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <div className="text-6xl mb-4">📚</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Chapter</h3>
-              <p className="text-gray-600">Choose a chapter from the list to view and edit its content</p>
+              <div className="text-6xl mb-4">🏘️</div> {/* Changed icon */}
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Property/Lead</h3> {/* Changed */}
+              <p className="text-gray-600">Choose a property or lead from the list to view and manage its details.</p> {/* Changed */}
             </div>
           </div>
         )}

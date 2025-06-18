@@ -88,11 +88,11 @@ export default function DashboardNavigation({
                   className="flex items-center gap-3"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">PS</span>
+                    <span className="text-white font-bold text-sm">PA</span> {/* PropAnalyzed short */}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-sm">ProfitPen Dashboard</h3>
-                    <p className="text-xs text-gray-500">Workspace Overview</p>
+                    <h3 className="font-semibold text-gray-900 text-sm">PropAnalyzed Dashboard</h3>
+                    <p className="text-xs text-gray-500">Lead & Property Overview</p>
                   </div>
                 </motion.div>
               )}
@@ -127,14 +127,14 @@ export default function DashboardNavigation({
                 <div className="flex items-center gap-4 text-xs text-gray-600">
                   <span className="flex items-center gap-1">
                     <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    {pageCount} pages
+                    {pageCount} data points {/* Changed from pages */}
                   </span>
                   <span className="flex items-center gap-1">
                     <span className={`w-2 h-2 rounded-full ${
                       qualityScore >= 8 ? 'bg-green-500' : 
                       qualityScore >= 6 ? 'bg-yellow-500' : 'bg-red-500'
                     }`}></span>
-                    {qualityScore}/10
+                    {qualityScore}/10 lead score {/* Added "lead score" for context */}
                   </span>
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function DashboardNavigation({
                   animate={sidebarCollapsed ? 'collapsed' : 'expanded'}
                   className="text-sm"
                 >
-                  Studio
+                  Lead Dashboard
                 </motion.span>
               )}
             </button>
@@ -239,7 +239,7 @@ export default function DashboardNavigation({
                   animate={sidebarCollapsed ? 'collapsed' : 'expanded'}
                   className="text-sm"
                 >
-                  Preview
+                  View Reports
                 </motion.span>
               )}
             </button>
