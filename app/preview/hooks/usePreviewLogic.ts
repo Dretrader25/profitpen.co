@@ -17,7 +17,7 @@ export function usePreviewLogic() {
   const { 
     currentPageCount, 
     setCurrentPageCount, 
-    maxPages, 
+    // maxPages, // Removed
     handleRemovePage: baseHandleRemovePage, 
     getVisiblePages: baseGetVisiblePages, 
     getPageContent: baseGetPageContent 
@@ -27,11 +27,11 @@ export function usePreviewLogic() {
   const { 
     isGeneratingMore, 
     isGenerating, 
-    progress, 
+    // progress, // Removed
     isGeneratingEnhanced, 
     enhancedProgress, 
-    handleRegeneratePage: baseHandleRegeneratePage, 
-    generateMorePages: baseGenerateMorePages 
+    handleRegeneratePage: baseHandleRegeneratePage
+    // generateMorePages: baseGenerateMorePages // Removed
   } = useContentGeneration();
 
   // Quality analysis
@@ -71,9 +71,9 @@ export function usePreviewLogic() {
     await baseHandleRegeneratePage(pageNum, persistedContent, setPersistedContent);
   };
 
-  const generateMorePages = async (columnCount: number = 1) => {
-    await baseGenerateMorePages(columnCount, currentPageCount, maxPages, persistedContent, setPersistedContent, setCurrentPageCount);
-  };
+  // const generateMorePages = async (columnCount: number = 1) => { // Removed
+  //   await baseGenerateMorePages(columnCount, currentPageCount, maxPages, persistedContent, setPersistedContent, setCurrentPageCount);
+  // };
 
   const getPageContent = (pageNum: number): string => {
     return baseGetPageContent(pageNum, persistedContent, setPersistedContent);
@@ -87,17 +87,17 @@ export function usePreviewLogic() {
   return {
     persistedContent,
     currentPageCount,
-    isGeneratingMore,
+    // isGeneratingMore, // Removed
     isGenerating,
-    progress,
-    maxPages,
+    // progress, // Removed
+    // maxPages, // Removed
     contentQuality,
     isGeneratingEnhanced,
     enhancedProgress,
     handleRemovePage,
     getVisiblePages,
     handleRegeneratePage,
-    generateMorePages,
+    // generateMorePages, // Removed
     getPageContent,
     analyzePageQuality,
     getBookQualityStats,

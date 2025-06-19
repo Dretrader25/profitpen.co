@@ -127,15 +127,15 @@ export default function PreviewPage() {
   const {
     persistedContent,
     currentPageCount,
-    isGeneratingMore,
-    maxPages,
+    // isGeneratingMore, // Removed
+    // maxPages, // Removed
     contentQuality,
     handleRemovePage,
     getVisiblePages,
     handleRegeneratePage,
-    generateMorePages,
+    // generateMorePages, // Removed
     isGenerating,
-    progress,
+    // progress, // Removed
     getPageContent,
     getBookQualityStats,
     setPersistedContent
@@ -866,47 +866,7 @@ export default function PreviewPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
       </div>
 
-      {/* Generate More Button */}
-      <div className="sticky bottom-12 left-0 right-0 flex justify-center items-center z-10 -mt-32">
-        <motion.button
-          onClick={() => generateMorePages(columnCount)}
-          disabled={isGeneratingMore || currentPageCount >= maxPages}
-          className={`
-            relative px-8 py-4 rounded-2xl font-medium text-gray-700
-            ${currentPageCount >= maxPages 
-              ? 'bg-gray-100/50 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300'
-            }
-            transition-all duration-200 shadow-lg backdrop-blur-sm
-            border border-gray-200
-          `}
-          whileHover={currentPageCount < maxPages ? { scale: 1.02 } : {}}
-          whileTap={currentPageCount < maxPages ? { scale: 0.98 } : {}}
-        >
-          <div className="flex items-center space-x-3">
-            {isGeneratingMore ? (
-              <>
-                <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin" />
-                <span>Loading Data...</span> {/* Changed */}
-              </>
-            ) : currentPageCount >= maxPages ? (
-              <>
-                <span className="text-gray-400">Maximum Data Sections Reached</span> {/* Changed */}
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>Load More Data</span> {/* Changed */}
-                <span className="text-sm text-gray-700">
-                  ({currentPageCount}/{maxPages} sections) {/* Changed */}
-                </span>
-              </>
-            )}
-          </div>
-        </motion.button>
-      </div>
+      {/* Generate More Button - REMOVED */}
 
       {/* Export Modal */}
       <ExportModal
